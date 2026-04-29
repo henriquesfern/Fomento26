@@ -1,0 +1,184 @@
+# Changelog
+
+## [1.5.0] - 2026-04-29
+
+### Adicionado / Melhorado
+- **Finalização do Assistente de IA:** Versão consolidada do Assistente de Inteligência Artificial para consulta de dados estruturados.
+- **Renderização e Formatação Completas:** Adoção e estabilização de bibliotecas interpretadoras de Markdown (`react-markdown`, `remark-gfm`, `remark-math` e `rehype-katex`), conferindo estabilidade visual à formatação de listas, tabelas e cálculos matemáticos gerados pelas respotas do Gemini.
+- **Isolamento de Domínio e Conduta:** Estabelecidos comandos restritos ao ecossistema do aplicativo (Fomento e Patrocínio), com tratamento de recusas e alertas educacionais.
+
+## [1.4.2] - 2026-04-29
+
+### Corrigido
+- **Fórmulas Matemáticas na Resposta da IA:** Corrigido problema com a exibição de fórmulas matemáticas (como expressões do tipo `\frac{A}{B}`). Implementados os plugins `remark-math`, `rehype-katex` e `katex` para que o interpretador de Markdown converta corretamente expressões matemáticas avançadas na apresentação visual interativa da IA.
+
+## [1.4.1] - 2026-04-29
+
+### Corrigido
+- **Tabelas na Resposta da IA:** Corrigido problema de formatação na qual as respostas estruturadas fornecidas pela inteligência artificial em formato tabular perdiam a quebra de linha. Implementado o plugin oficial \`remark-gfm\` no interpretador de Markdown juntamente com as bibliotecas nativas de tipografia do Tailwind, garantindo assim total suporte e aderência nativa a tabelas, listas e citações.
+
+## [1.4.0] - 2026-04-29
+
+### Adicionado / Melhorado
+- **IA Assistente:** Implementado recurso de busca e análise inteligente guiado pelo assistente Gemini, usando o novo módulo "IA - Consulta de Dados" adicionado no menu.
+- **Contexto Restritivo com Regras Estritas:** A inteligência artificial foi configurada de forma fechada, fornecendo respostas baseando-se única e exclusivamente no banco de dados estrutural do Fomento e Patrocínio (2025/2026). Conta também com mensagens explícitas atestando respeito a termos de conduta, declinando de questões estranhas ao escopo. O app agora tira proveito robusto do SDK `@google/genai` (uso interno gratuito no build do AI Studio sem custos para o usuário) garantindo a funcionalidade dentro das permissões e regulamentos.
+
+## [1.3.0] - 2026-04-29
+
+### Adicionado / Melhorado
+- **Nova Aba "Força por Estado":** O novo painel dinâmico foi oficializado como uma sub-aba estrutural na listagem do aplicativo (após Insights e Análises), permitindo ampla expansão na escalabilidade visual desta representação particular.
+- **Gráfico de Dispersão Consolidado:** O gráfico de dispersão com mapeamento cartográfico visual obteve correções e refinamentos finais. Foram aplicados os cálculos matemáticos adequados para redimensionamento proporcional fiel dos objetos, bem como o fluxo fidedigno das bandeiras de todos os estados brasileiros no plano do gráfico.
+
+## [1.2.8] - 2026-04-29
+
+### Corrigido
+- **Imagens das Bandeiras (`StateForceView`):** Corrigida a renderização do fundo dos círculos de dados no gráfico para exibir as bandeiras correntes dos estados brasileiros. O serviço de CDN anterior (FlagCDN) não possuía suporte explícito à hierarquia de estados brasileiros, então o visualizador passou a extrair imagens consistentes de um repositório confiável no GitHub (`bgeneto/bandeiras-br`).
+
+## [1.2.7] - 2026-04-29
+
+### Corrigido
+- **Ajuste no Dimensionamento (Dispersão de Força por Estado):** Implementado cálculo manual fidedigno para a visualização gráfica dos tamanhos das bandeiras dos estados. O raio em cada círculo agora corresponde de forma exata e proporcional (usando mapeamento de área relativa e raiz quadrada em relação ao montante máximo) ao valor total de repasses destinados a cada UF.
+
+## [1.2.6] - 2026-04-29
+
+### Adicionado / Melhorado
+- **Para Evitar Poluição Visual:** O gráfico "Força por Estado" (dispersão de performance Fomento vs. Patrocínio por estado) foi promovido para uma aba individual própria chamada `Força por Estado`, posicionada logo após `Insights e Análises`.
+- Com esta alteração, na aba mãe ("Insights e Análises"), os visualizadores "De Onde a Verba Vem?" ganham maior destaque, enquanto o gráfico de "Evolução de Orçamento" agora ocupa a largura total inferior da tela, entregando uma visualização com mais espaço dinâmico de plotagem.
+
+## [1.2.5] - 2026-04-29
+
+### Alterado
+- **Dispersão de Força por Estado (`InsightsView`):** O gráfico anterior (em barras) que comparava o volume de Fomento vs Patrocínio dos estados foi substituído por um Gráfico de Dispersão (Scatter Chart).
+- A nova visualização plota o repasse de Fomento (eixo X) contra Patrocínio (eixo Y), onde cada ponto representa um estado.
+- Adicionada formatação visual personalizada aos pontos de dados: o tamanho de cada elemento no gráfico reflete de forma proporcional ao montante de apoio recebido, e a representação se dá pela imagem em formato redondo com a bandeira do estado (via integração com FlagCDN).
+
+## [1.2.4] - 2026-04-29
+
+### Adicionado / Melhorado
+- **Funil de Força por Estado (`InsightsView`):** Adicionado um novo gráfico de barras horizontais sobrepostas (simulando um funil de concentração de verbas) que permite parear os montantes de Fomento e Patrocínio concomitantemente para cada estado.
+- **Integração de Layout:** O novo gráfico de Força por Estado foi agrupado na mesma linha e alinhado em proporção 50/50 com o demonstrativo de "Evolução de Orçamento", logo abaixo do topo do dashboard.
+
+## [1.2.3] - 2026-04-29
+
+### Alterado
+- **Layout de Insights e Análises:** Otimização do arranjo de painéis e gráficos para focar nos dados mais expressivos:
+  - Excluídos os indicadores de "Análise de Desempenho (Fomento 2026)" (como impacto de nota e eficiência de estados) conforme orientação de relevância momentânea.
+  - O gráfico "**Fomento vs. Patrocínio**" foi emparelhado lado a lado com "**CDEN vs. Precursoras**", em tamanho e composição idênticas, melhorando a simetria visual.
+  - O gráfico de Evolução sofreu readequação para "**Evolução de Orçamento**", plotando as áreas tanto do Fomento quanto do Patrocínio e ficando reposicionado em largura total logo abaixo dos painéis de representatividade.
+
+## [1.2.2] - 2026-04-29
+
+### Corrigido
+- Restaurada a renderização da aba de Insights e Análises que apresentava tela branca ("crash") devido à ausência do componente de Legenda (`Legend`) nos gráficos de pizza.
+
+## [1.2.1] - 2026-04-29
+
+### Adicionado / Melhorado (Insights e Análises Históricas)
+- **Painel de Insights Evolutivo:** A aba "Insights e Análises" foi reestruturada para dividir a visão entre o context global/histórico e o ano corrente (Fomento 2026).
+- **Novas Análises Globais Incorporadas:**
+  - **CDEN vs. Precursoras (Histórico Total):** O comparativo de representatividade agora processa a junção de toda a base de dados de todos os anos (Fomento e Patrocínio), refletindo o engajamento global das entidades.
+  - **Fomento vs. Patrocínio:** Inclusão de um novo gráfico circular (PieChart) que consolida a distribuição histórica dos valores concedidos entre as duas frentes.
+  - **Evolução do Fomento (2025 x 2026):** Adição de um gráfico de área com preenchimento em gradiente identificando a evolução do investimento total do repasse de Fomento de um ano para o outro.
+- **Análises de Desempenho (Fomento 2026):** Todos os indicadores operacionais sensíveis e voltados a cálculos de nota de eficiência — como 'Impacto da Nota Final', 'Estados com Maior Eficiência' e 'Estados com Maior Corte' — foram preservados exatamente em sua estrutura ideal original, passando a explicitar didaticamente que pertencem apenas aos cenários em andamento (Edital 2026).
+
+## [1.2.0] - 2026-04-29
+
+### Adicionado / Melhorado (Atualização Cartográfica)
+- **Rótulos Dinâmicos de Entidades no Mapa:**
+  - O mapa interativo (Dashboard Global de Entidades) agora plota sobre o centro geográfico de cada estado a quantidade total de entidades distintas atendidas na respectiva UF.
+  - **Identificação Visual Inteligente:** Os rótulos numéricos (agora estruturados em 16px e FontWeight 800) sobrepostos no mapa reagem dinamicamente à cor de fundo baseada no volume do repasse. O sistema insere um contraste refinado (texto escuro com sombras claras para fundos brandos e texto branco para estados escuros), assegurando máxima legibilidade.
+  - **Atenção a Estados Descobertos:** Estados que não constam evidências de repasse (0 entidades) agora apresentam a indicação numérica '0'. Para complementar didaticamente, aplicou-se também uma base em vermelho pastel para focar atenção gerencial em locais sem histórico de repasses.
+- **Tooltip Detalhado Aprimorado:** O painel flutuante via hover além de Nome do Estado, Repasse Total, Fomento e Patrocínio, passou a exibir o detalhamento de Entidades Atendidas.
+
+
+## [1.1.7] - 2026-04-29
+
+### Adicionado
+- **Dashboard Global de Entidades:** O mapa agora exibe o número "0" em destaque para estados que não possuem entidades atendidas. Estes estados também foram realçados com uma cor base levemente avermelhada (vermelho pastel), reforçando visualmente a ausência de repasses no histórico.
+
+## [1.1.6] - 2026-04-29
+
+### Alterado
+- **Dashboard Global de Entidades:** A fonte dos rótulos de entidades foi novamente ampliada (agora para 16px) com maior peso (fontWeight: 800) e implementada com contraste dinâmico: as cores das fontes e sombras se alteram magicamente entre escuro e claro dependendo da tonalidade de fundo do estado, garantindo uma máxima legibilidade independentemente do estado focado.
+
+## [1.1.5] - 2026-04-29
+
+### Alterado
+- **Dashboard Global de Entidades:** A fonte dos rótulos flutuantes com o número de entidades por estado no mapa foi aumentada para melhorar a legibilidade.
+
+## [1.1.4] - 2026-04-29
+
+### Adicionado
+- **Dashboard Global de Entidades:** O mapa interativo de Repasse Total Histórico agora plota sobre o centro geográfico de cada estado (rótulo flutuante) a quantidade total de entidades atendidas na respectiva Unidade Federativa. Esta funcionalidade também foi adicionada de forma detalhada no card interativo (Tooltip).
+
+## [1.1.3] - 2026-04-29
+
+### Alterado
+- **Dashboard Global de Entidades:** O layout com três mapas foi simplificado para apresentar um único mapa focado no "Repasse Total Histórico", que agora utiliza toda a área disponível para facilitar a visualização e interação.
+- **Tooltip Detalhado:** O tooltip (texto ao passar o mouse) do mapa agora apresenta informações mais granulares, exibindo o Nome do Estado + Sigla, Valor do Repasse Total e detalhamentos específicos de Fomento e Patrocínio simultaneamente.
+
+## [1.1.2] - 2026-04-29
+
+### Alterado
+- **Dashboard Global de Entidades:** A aba "Histórico - Entidades" foi reprojetada para oferecer uma visão puramente cartográfica e consolidada.
+  - Implementação de 3 mapas topográficos interativos distribuídos na mesma tela (1 mapa grande focando no Repasse Total, e 2 mapas menores lado a lado para Repasses apenas de Fomento e apenas de Patrocínio).
+  - A tabela consolidada e interativa com buscas foi movida/restrita apenas para a sub-aba "Diretório de Entidades" para facilitar a análise dos gestores e diminuir a redundância visual.
+  - *Correção Visual*: Ajustada a projeção de escala (ViewBox) dos mapas do Brasil para formato 1:1 contínuo e responsivo, prevenindo distorções, alongamentos ou cortes ("clipping") das bordas dos estados independentemente do painel/container em que são renderizados.
+
+## [1.1.1] - 2026-04-29
+
+### Alterado
+- **Padronização de Estados:** A informação sobre o Estado (UF) em todos os datasets (Fomento, Patrocínio, etc.) foi padronizada para utilizar o nome completo da Unidade da Federação no lugar de siglas (ex: "São Paulo" ao invés de "SP", "Santa Catarina" no lugar de "SC"). Essa mudança garante consistência na listagem, filtros e também na correspondência interativa dos mapas topográficos nos ambientes analíticos.
+
+## [1.1.0] - 2026-04-29
+
+### Adicionado
+- **Histórico Consolidado de Entidades:** Criada a nova aba "Entidades" sob "Histórico", que apresenta o `Diretório Global de Entidades`.
+  - Consolida todas as entidades que já participaram de qualquer edital (Fomento ou Patrocínio).
+  - Apresenta o Total Histórico Repassado.
+  - Demonstra visualmente as proporções (%) de repasse via Fomento e Patrocínio por entidade, incluindo os valores absolutos.
+  - Inclui busca otimizada por Nome ou CNPJ e filtros consolidados por Grupo (CDEN/Precursora) e Estado.
+  - Ordenação interativa pelas colunas presentes (Ex: Repasse Total, % Fomento).
+- **Integração de Temas (Overview e FinancialPanel):** Implementado um sistema de temas (`theme="fomento" | "patrocinio"`) nos componentes `Overview` e `FinancialPanel`. Este sistema permite que os gráficos, mapas e elementos textuais adaptem suas cores de acordo com o contexto em que são renderizados.
+- **Identidade Visual Escalonada:**
+  - **Fomento:** Os gráficos, mapas, ícones e destaques numéricos na aba "Histórico - Fomento" agora utilizam consistentemente uma paleta baseada em tons de **Verde** (representando crescimento e suporte corporativo).
+  - **Patrocínio:** A aba "Histórico - Patrocínio" passa a utilizar uma identidade baseada em tons de **Laranja/Âmbar**, proporcionando rápida identificação visual e alinhamento com os gráficos de comparativos globais.
+- **Dashboards Consolidados:** A página de Visão Geral (Overview) foi reestruturada para suportar injeção dinâmica de dados. Com isso, ela passa a atuar como tela "home" oficial (resumo) tanto do `Histórico - Fomento` quanto do `Histórico - Patrocínio`.
+
+### Corrigido
+- **Mapeamento Topográfico e Siglas de Estado:** Padronizadas as siglas de estado (coluna `ESTADO`) no parse dos arquivos CSV de Patrocínio. Anteriormente, nomes completos de estados (ex: "São Paulo") estavam impedindo o correto match geográfico do `react-simple-maps`, o que causava o "apagão" da região de mapa de hover ("Investimento por Estado") e de dados vinculados. O sistema de mapas do Histórico de Patrocínio e Fomento passou a refletir os dados de maneira imaculada.
+
+## [1.0.3] - 2026-04-29
+
+### Corrigido
+- Substituído `Fomento2026.ts` incorreto pelo arquivo correto com os dados correntes (que reintroduz as colunas originais como OBJETIVO `Direcionamento Estratégico Local`, `Identificação e Proposição de Soluções`, etc).
+- Corrigida a lógica de renderização de tags no Diretório de Entidades para mapear automaticamente as cores correspondentes aos objetivos do Fomento (em vez da tag genérica "Fomento 2026").
+
+## [1.0.2] - 2026-04-29
+
+### Corrigido
+- Exclusão da tag genérica "Fomento 2026" no Diretório de Entidades da visão corrente (`fomento2026.ts`).
+- Restauração da capacidade de leitura das colunas "Objetivo" e "Categoria" dos arquivos CSV, permitindo que a mesma lógica de cores (e.g. Mapeamento de Recursos, Evento, etc) seja usada na tag, mapeando o ID de "Linha Solicitada" se necessário.
+
+## [1.0.1] - 2026-04-29
+
+### Modificado
+- Corrigido o fluxo de dados "corrente" x "histórico" para Fomento.
+- Removido `selecionados.ts` que se tratava de dados de teste/placeholder e inserido os dados formatados `Fomento2026.ts` como base oficial de fomento do ano atual.
+- As abas principais de controle (Diretório, Financeiro, Fiscal etc) agora consomem automaticamente de `fomento2026`.
+
+## [1.0.0] - 2026-04-29
+
+### Adicionado
+- Estrutura completa de dados históricos para o programa de Patrocínio (2025) e Fomento (2025).
+- Criação das novas abas exclusivas para o histórico:
+  - **Histórico - Patrocínio**: Tabela em que constam todos os patrocínios organizados com opção de filtros avançados.
+  - **Diretório de Entidades (Patrocínio)**: Listagem detalhada das entidades envolvidas.
+  - **Painel Financeiro (Patrocínio)**: Gráficos financeiros de patrocínio que mostram a distribuição de valores.
+  - **Fomento**: Tabelas de histórico e informações de todas as abas adaptadas para puxar o CSV original de 2025 no GitHub (via fetch).
+
+### Modificado
+- Conversão da base de Fomento de um arquivo estático (`selecionados.ts`) para um CSV autônomo e assincronamente injetável (`fomento2025.ts`).
+- Renomeado `patrocinio.ts` para `patrocinio2025.ts` para melhor modularização temporal.
+- O carregamento dos dados de histórico de patrocínio 2025 e fomento 2025 agora é assíncrono/pré-processado pelo CSV original do GitHub.
+- Nova versão principal lançada (`v1.0.0`) para marcar esse novo marco de desenvolvimento de módulos independentes de histórico e financeiro.

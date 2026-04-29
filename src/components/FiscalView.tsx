@@ -1,25 +1,36 @@
 import React, { useMemo, useState } from 'react';
 import { appData } from '../data/parser';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Cell, LabelList } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Cell, LabelList, Legend } from 'recharts';
 import { Users, FileText, Map as MapIcon, CircleDollarSign } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import type { EntidadeSelecionada } from '../data/parser';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function FiscalView() {
-  const { selecionados } = appData;
+interface FiscalViewProps {
+  data?: EntidadeSelecionada[];
+}
+
+export function FiscalView({ data = appData.fomento2026 }: FiscalViewProps) {
+  const selecionados = data;
   const [selectedFiscal, setSelectedFiscal] = useState<string | null>(null);
 
   const fiscalData = useMemo(() => {
     const map = new Map<string, {
       name: string;
       processes: number;
+      processesFomento: number;
+      processesPatrocinio: number;
       totalConcedido: number;
-      states: Set<string>;
-      regions: Set<string>;
+      totalFomento: number;
+      totalPatrocinio: number;
+      statesFomento: Set<string>;
+      statesPatrocinio: Set<string>;
+      regionsFomento: Set<string>;
+      regionsPatrocinio: Set<string>;
     }>();
 
     selecionados.forEach(item => {
@@ -28,24 +39,44 @@ export function FiscalView() {
         map.set(fiscalName, {
           name: fiscalName,
           processes: 0,
+          processesFomento: 0,
+          processesPatrocinio: 0,
           totalConcedido: 0,
-          states: new Set(),
-          regions: new Set(),
+          totalFomento: 0,
+          totalPatrocinio: 0,
+          statesFomento: new Set(),
+          statesPatrocinio: new Set(),
+          regionsFomento: new Set(),
+          regionsPatrocinio: new Set(),
         });
       }
       const f = map.get(fiscalName)!;
       f.processes += 1;
-      f.totalConcedido += item.VALOR_CONCEDENTE;
-      if (item.ESTADO) f.states.add(item.ESTADO);
-      if (item.REGIÃO) f.regions.add(item.REGIÃO);
+      f.totalConcedido += item.VALOR_REPASSE;
+      
+      const repasse = item.tipoRepasse || 'Fomento';
+      if (repasse === 'Fomento') {
+        f.processesFomento += 1;
+        f.totalFomento += item.VALOR_REPASSE;
+        if (item.ESTADO) f.statesFomento.add(item.ESTADO);
+        if (item.REGIÃO) f.regionsFomento.add(item.REGIÃO);
+      } else if (repasse === 'Patrocínio') {
+        f.processesPatrocinio += 1;
+        f.totalPatrocinio += item.VALOR_REPASSE;
+        if (item.ESTADO) f.statesPatrocinio.add(item.ESTADO);
+        if (item.REGIÃO) f.regionsPatrocinio.add(item.REGIÃO);
+      }
     });
 
     return Array.from(map.values())
       .map(f => ({
         ...f,
-        statesList: Array.from(f.states).sort().join(', '),
-        regionsList: Array.from(f.regions).sort().join(', '),
-        statesCount: f.states.size,
+        statesFomentoList: Array.from(f.statesFomento).sort().join(', '),
+        statesPatrocinioList: Array.from(f.statesPatrocinio).sort().join(', '),
+        regionsFomentoList: Array.from(f.regionsFomento).sort().join(', '),
+        regionsPatrocinioList: Array.from(f.regionsPatrocinio).sort().join(', '),
+        statesFomentoCount: f.statesFomento.size,
+        statesPatrocinioCount: f.statesPatrocinio.size,
       }))
       .sort((a,b) => b.totalConcedido - a.totalConcedido); // sort by volume
   }, [selecionados]);
@@ -67,6 +98,8 @@ export function FiscalView() {
       fullName: f.name,
       processes: f.processes,
       volume: f.totalConcedido,
+      volumeFomento: f.totalFomento,
+      volumePatrocinio: f.totalPatrocinio,
     }));
   }, [fiscalData]);
 
@@ -116,21 +149,37 @@ export function FiscalView() {
                 <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: "#64748b" }} />
                 <Tooltip 
                   formatter={(val: number, name: string) => {
-                    if (name === "volume") return [new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val), 'Volume Fiscalizado'];
-                    return [val, 'Processos'];
+                    const labelMap: Record<string, string> = {
+                      volumeFomento: 'Volume Fomento',
+                      volumePatrocinio: 'Volume Patrocínio'
+                    };
+                    const label = labelMap[name] || name;
+                    return [new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val), label];
                   }}
                   labelFormatter={(name) => `Fiscal: ${chartData.find(d => d.name === name)?.fullName || name}`}
                   cursor={{fill: '#f1f5f9'}}
                 />
-                <Bar dataKey="volume" fill="#003865" radius={[0, 4, 4, 0]} name="volume">
+                <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
+                <Bar dataKey="volumeFomento" stackId="a" fill="#008f4c" name="Fomento">
                   {chartData.map((entry, index) => (
                     <Cell 
-                      key={`cell-${index}`} 
-                      fill={entry.fullName === 'Não Atribuído' ? '#94a3b8' : '#003865'}
+                      key={`cell-fom-${index}`} 
+                      fill={entry.fullName === 'Não Atribuído' ? '#cbd5e1' : '#008f4c'}
                       opacity={selectedFiscal && selectedFiscal !== entry.fullName ? 0.3 : 1}
                       onClick={() => setSelectedFiscal(selectedFiscal === entry.fullName ? null : entry.fullName)}
                       cursor="pointer"
                     />
+                  ))}
+                </Bar>
+                <Bar dataKey="volumePatrocinio" stackId="a" fill="#f59e0b" radius={[0, 4, 4, 0]} name="Patrocínio">
+                  {chartData.map((entry, index) => (
+                     <Cell 
+                     key={`cell-pat-${index}`} 
+                     fill={entry.fullName === 'Não Atribuído' ? '#e2e8f0' : '#f59e0b'}
+                     opacity={selectedFiscal && selectedFiscal !== entry.fullName ? 0.3 : 1}
+                     onClick={() => setSelectedFiscal(selectedFiscal === entry.fullName ? null : entry.fullName)}
+                     cursor="pointer"
+                   />
                   ))}
                   <LabelList 
                     dataKey="processes" 
@@ -176,18 +225,33 @@ export function FiscalView() {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm mt-3 border-t border-slate-200/60 pt-3">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-sm mt-3 border-t border-slate-200/60 pt-3">
                   <div>
-                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Processos</div>
+                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Total Processos</div>
                     <div className="font-medium text-slate-800">{f.processes} projeto{f.processes !== 1 && 's'}</div>
                   </div>
                   <div>
-                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Regiões</div>
-                    <div className="font-medium text-slate-800">{f.regionsList || 'N/A'}</div>
+                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Repasses</div>
+                    <div className="flex flex-col gap-0.5 text-xs">
+                      {f.processesFomento > 0 && <div className="text-[#008f4c] font-medium">{f.processesFomento} Fomento</div>}
+                      {f.processesPatrocinio > 0 && <div className="text-amber-600 font-medium">{f.processesPatrocinio} Patrocínio</div>}
+                    </div>
                   </div>
                   <div>
-                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Estados de Atuação ({f.statesCount})</div>
-                    <div className="font-medium text-slate-800 line-clamp-2" title={f.statesList}>{f.statesList || 'N/A'}</div>
+                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Regiões</div>
+                    <div className="flex flex-col gap-0.5 text-xs">
+                      {f.regionsFomentoList && <div className="text-[#008f4c] font-medium" title={f.regionsFomentoList}>{f.regionsFomentoList}</div>}
+                      {f.regionsPatrocinioList && <div className="text-amber-600 font-medium" title={f.regionsPatrocinioList}>{f.regionsPatrocinioList}</div>}
+                      {!f.regionsFomentoList && !f.regionsPatrocinioList && <div className="font-medium text-slate-500">N/A</div>}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500 text-xs uppercase tracking-wider mb-1">Estados</div>
+                    <div className="flex flex-col gap-0.5 text-xs">
+                      {f.statesFomentoList && <div className="text-[#008f4c] font-medium line-clamp-1" title={f.statesFomentoList}>({f.statesFomentoCount}) {f.statesFomentoList}</div>}
+                      {f.statesPatrocinioList && <div className="text-amber-600 font-medium line-clamp-1" title={f.statesPatrocinioList}>({f.statesPatrocinioCount}) {f.statesPatrocinioList}</div>}
+                      {!f.statesFomentoList && !f.statesPatrocinioList && <div className="font-medium text-slate-500">N/A</div>}
+                    </div>
                   </div>
                 </div>
               </div>

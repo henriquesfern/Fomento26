@@ -1,39 +1,66 @@
 import React, { useState, useMemo } from 'react';
 import { appData } from '../data/parser';
-import { Search, Filter, Check, X } from 'lucide-react';
+import { Search, Filter, Check, X, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+
+import type { EntidadeSelecionada } from '../data/parser';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function Directory() {
-  const { selecionados } = appData;
+interface DirectoryProps {
+  data?: EntidadeSelecionada[];
+}
+
+export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
+  const selecionados = data;
   const [searchTerm, setSearchTerm] = useState('');
   const [filterGrupo, setFilterGrupo] = useState<string>('all');
   const [filterEstado, setFilterEstado] = useState<string>('all');
   const [filterRegiao, setFilterRegiao] = useState<string>('all');
-  const [filterObjetivo, setFilterObjetivo] = useState<string>('all');
+  const [filterCategoria, setFilterCategoria] = useState<string>('all');
   const [filterFiscal, setFilterFiscal] = useState<string>('all');
+  const [filterRepasse, setFilterRepasse] = useState<string>('all');
+
+  type SortKey = 'ENTIDADE' | 'CNPJ' | 'ESTADO' | 'IsCDEN' | 'VALOR_REPASSE' | 'NOTA' | 'tipoRepasse';
+  const [sortConfig, setSortConfig] = useState<{ key: SortKey | null, direction: 'asc' | 'desc' }>({ 
+    key: null, 
+    direction: 'asc' 
+  });
+
+  const handleSort = (key: SortKey) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const dataWithGlobalRank = useMemo(() => {
-    const sorted = [...selecionados].sort((a, b) => b.MÉDIA - a.MÉDIA);
+    const sorted = [...selecionados].sort((a, b) => b.NOTA - a.NOTA);
     const total = sorted.length;
-    return sorted.map((item, index) => ({
-      ...item,
-      globalRank: index + 1,
-      totalEntities: total
-    }));
+    return sorted.map((item, index) => {
+      // Como os dados atuais são todos do processo seletivo de fomento 2026:
+      const tipoRepasse: 'Fomento' | 'Patrocínio' = (item as any).tipoRepasse || 'Fomento';
+
+      return {
+        ...item,
+        globalRank: index + 1,
+        totalEntities: total,
+        tipoRepasse
+      };
+    });
   }, [selecionados]);
 
   const estados = useMemo(() => Array.from(new Set(dataWithGlobalRank.map(item => item.ESTADO).filter(Boolean))).sort(), [dataWithGlobalRank]);
   const regioes = useMemo(() => Array.from(new Set(dataWithGlobalRank.map(item => item.REGIÃO).filter(Boolean))).sort(), [dataWithGlobalRank]);
-  const objetivos = useMemo(() => Array.from(new Set(dataWithGlobalRank.map(item => item.OBJETIVO).filter(Boolean))).sort(), [dataWithGlobalRank]);
+  const categorias = useMemo(() => Array.from(new Set(dataWithGlobalRank.map(item => item.CATEGORIA).filter(Boolean))).sort(), [dataWithGlobalRank]);
   const fiscais = useMemo(() => Array.from(new Set(dataWithGlobalRank.map(item => item.FISCAL).filter(Boolean))).sort(), [dataWithGlobalRank]);
 
   const filteredData = useMemo(() => {
-    return dataWithGlobalRank.filter(item => {
+    let result = dataWithGlobalRank.filter(item => {
       const matchSearch = item.ENTIDADE.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           item.CNPJ.includes(searchTerm);
       
@@ -49,11 +76,11 @@ export function Directory() {
       const matchEstado = filterEstado === 'all' || item.ESTADO === filterEstado;
       const matchRegiao = filterRegiao === 'all' || item.REGIÃO === filterRegiao;
       
-      let matchObjetivo = true;
-      if (filterObjetivo === 'undefined_objective') {
-        matchObjetivo = !item.OBJETIVO || item.OBJETIVO.trim() === '';
-      } else if (filterObjetivo !== 'all') {
-        matchObjetivo = item.OBJETIVO === filterObjetivo;
+      let matchCategoria = true;
+      if (filterCategoria === 'undefined_category') {
+        matchCategoria = !item.CATEGORIA || item.CATEGORIA.trim() === '';
+      } else if (filterCategoria !== 'all') {
+        matchCategoria = item.CATEGORIA === filterCategoria;
       }
 
       let matchFiscal = true;
@@ -63,9 +90,49 @@ export function Directory() {
         matchFiscal = item.FISCAL === filterFiscal;
       }
       
-      return matchSearch && matchGrupo && matchEstado && matchRegiao && matchObjetivo && matchFiscal;
+      const matchRepasse = filterRepasse === 'all' || item.tipoRepasse === filterRepasse;
+      
+      return matchSearch && matchGrupo && matchEstado && matchRegiao && matchCategoria && matchFiscal && matchRepasse;
     });
-  }, [selecionados, searchTerm, filterGrupo, filterEstado, filterRegiao, filterObjetivo, filterFiscal]);
+
+    if (sortConfig.key) {
+      result = result.sort((a, b) => {
+        let aVal: any = a[sortConfig.key!];
+        let bVal: any = b[sortConfig.key!];
+
+        if (sortConfig.key === 'IsCDEN') {
+          // Compare groups logic (CDEN, Precursora, Regular)
+          const getGroupValue = (item: any) => {
+            if (item.IsCDEN) return 3;
+            if (item.IsPrecursora) return 2;
+            return 1;
+          };
+          aVal = getGroupValue(a);
+          bVal = getGroupValue(b);
+        } else if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (aVal < bVal) {
+          return sortConfig.direction === 'asc' ? -1 : 1;
+        }
+        if (aVal > bVal) {
+          return sortConfig.direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+
+    return result;
+  }, [dataWithGlobalRank, searchTerm, filterGrupo, filterEstado, filterRegiao, filterCategoria, filterFiscal, filterRepasse, sortConfig]);
+
+  const renderSortIndicator = (key: SortKey) => {
+    if (sortConfig.key !== key) {
+      return <ArrowUpDown size={14} className="ml-1 inline-block text-slate-400 opacity-0 transition-opacity group-hover:opacity-100" />;
+    }
+    return sortConfig.direction === 'asc' ? <ArrowUp size={14} className="ml-1 inline-block text-[#003865]" /> : <ArrowDown size={14} className="ml-1 inline-block text-[#003865]" />;
+  };
 
   return (
     <div className="bg-white border border-[#003865]/20 shadow-sm flex flex-col h-full rounded-none">
@@ -85,6 +152,19 @@ export function Directory() {
           </div>
           
           <div className="flex flex-wrap gap-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-slate-600 flex items-center"><Filter size={16} className="mr-1"/> Repasse:</span>
+              <select 
+                className="border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#003865] bg-white"
+                value={filterRepasse}
+                onChange={(e) => setFilterRepasse(e.target.value)}
+              >
+                <option value="all">Todos</option>
+                <option value="Fomento">Fomento</option>
+                <option value="Patrocínio">Patrocínio</option>
+              </select>
+            </div>
+
             <div className="flex items-center space-x-2">
               <span className="text-sm font-medium text-slate-600 flex items-center"><Filter size={16} className="mr-1"/> Grupo:</span>
               <select 
@@ -128,16 +208,16 @@ export function Directory() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-slate-600 flex items-center"><Filter size={16} className="mr-1"/> Objetivo:</span>
+              <span className="text-sm font-medium text-slate-600 flex items-center"><Filter size={16} className="mr-1"/> Categoria:</span>
               <select 
                 className="border border-slate-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#003865] bg-white max-w-[200px] truncate"
-                value={filterObjetivo}
-                onChange={(e) => setFilterObjetivo(e.target.value)}
-                title={filterObjetivo === 'all' ? 'Todos' : filterObjetivo === 'undefined_objective' ? 'Objetivo não definido' : filterObjetivo}
+                value={filterCategoria}
+                onChange={(e) => setFilterCategoria(e.target.value)}
+                title={filterCategoria === 'all' ? 'Todas' : filterCategoria === 'undefined_category' ? 'Categoria não definida' : filterCategoria}
               >
-                <option value="all">Todos</option>
-                <option value="undefined_objective">Objetivo não definido</option>
-                {objetivos.map(o => (
+                <option value="all">Todas</option>
+                <option value="undefined_category">Sem categoria</option>
+                {categorias.map(o => (
                   <option key={o} value={o}>{o}</option>
                 ))}
               </select>
@@ -166,12 +246,24 @@ export function Directory() {
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-50 sticky top-0 z-10">
             <tr>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10">Entidade</th>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10">CNPJ</th>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10">Estado</th>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-center">Grupo</th>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-right">Valor Fomentado</th>
-              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-right">Nota Final</th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('ENTIDADE')}>
+                <div className="flex items-center">Entidade {renderSortIndicator('ENTIDADE')}</div>
+              </th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('CNPJ')}>
+                <div className="flex items-center">CNPJ {renderSortIndicator('CNPJ')}</div>
+              </th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('ESTADO')}>
+                <div className="flex items-center">Estado {renderSortIndicator('ESTADO')}</div>
+              </th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-center cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('IsCDEN')}>
+                <div className="flex items-center justify-center">Grupo {renderSortIndicator('IsCDEN')}</div>
+              </th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-right cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('VALOR_REPASSE')}>
+                <div className="flex items-center justify-end">Valor do Repasse {renderSortIndicator('VALOR_REPASSE')}</div>
+              </th>
+              <th className="py-3 px-6 text-xs font-semibold text-[#003865] uppercase tracking-wider border-b border-[#003865]/10 text-right cursor-pointer group hover:bg-slate-100 transition-colors" onClick={() => handleSort('NOTA')}>
+                <div className="flex items-center justify-end">Nota Final {renderSortIndicator('NOTA')}</div>
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
@@ -184,21 +276,46 @@ export function Directory() {
                 <tr key={item.CNPJ + idx} className="hover:bg-slate-50 transition-colors">
                   <td className="py-3 px-6">
                     <div className="font-medium text-slate-800 text-sm">{item.ENTIDADE}</div>
-                    <div className="mt-1 flex flex-col items-start gap-1">
+                    <div className="mt-2 flex flex-wrap items-start gap-1">
                       <span className={cn(
-                        "inline-block px-2 py-0.5 rounded text-xs font-medium truncate max-w-sm",
-                        item.OBJETIVO === "Direcionamento Estratégico Local" ? "bg-blue-50 text-blue-700 border border-blue-200" :
-                        item.OBJETIVO === "Identificação e Proposição de Soluções" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" :
-                        item.OBJETIVO === "Mapeamento de Recursos" ? "bg-amber-50 text-amber-700 border border-amber-200" :
-                        "bg-slate-100 text-slate-600 border border-slate-200"
-                      )} title={item.OBJETIVO || "Não definido"}>
-                        {item.OBJETIVO || "Objetivo não definido"}
+                        "inline-block px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap",
+                        item.CATEGORIA === "Direcionamento Estratégico Local" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                        item.CATEGORIA === "Identificação e Proposição de Soluções" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                        item.CATEGORIA === "Mapeamento de Recursos" ? "bg-amber-50 text-amber-700 border-amber-200" :
+                        item.CATEGORIA === "Evento" ? "bg-purple-50 text-purple-700 border-purple-200" :
+                        item.CATEGORIA === "Revista" ? "bg-pink-50 text-pink-700 border-pink-200" :
+                        item.CATEGORIA === "Livro" ? "bg-cyan-50 text-cyan-700 border-cyan-200" :
+                        "bg-slate-100 text-slate-600 border-slate-200"
+                      )} title={item.CATEGORIA || "Não definido"}>
+                        {item.OBJETIVO || "Não definido"}
                       </span>
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200" title="Fiscal do Processo">
+                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap" title="Fiscal do Processo">
                         Fiscal: {item.FISCAL || "Não definido"}
                       </span>
-                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200" title="Número SEI">
+                      {item.FISCAL_SUPLENTE && (
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap" title="Fiscal Suplente">
+                          Suplente: {item.FISCAL_SUPLENTE}
+                        </span>
+                      )}
+                      {item.DATA_INICIO && (
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap" title="Período">
+                          {item.DATA_INICIO} {item.DATA_FIM && ` a ${item.DATA_FIM}`}
+                        </span>
+                      )}
+                      {item.MES && (
+                        <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap" title="Mês">
+                          {item.MES}
+                        </span>
+                      )}
+                      <span className="inline-block px-2 py-0.5 rounded text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap" title="Número SEI">
                         SEI: {item.SEI || "Não informado"}
+                      </span>
+                      <span className={cn(
+                        "inline-block px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap",
+                        item.tipoRepasse === 'Fomento' ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20" :
+                        "bg-orange-500/10 text-orange-700 border-orange-500/20"
+                      )} title="Tipo de Repasse">
+                        {item.tipoRepasse}
                       </span>
                     </div>
                   </td>
@@ -220,11 +337,11 @@ export function Directory() {
                     )}
                   </td>
                   <td className="py-3 px-6 text-sm font-semibold text-slate-800 text-right whitespace-nowrap">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.VALOR_CONCEDENTE)}
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.VALOR_REPASSE)}
                   </td>
                   <td className="py-3 px-6 text-right">
                     <div className="text-sm font-semibold text-slate-800">
-                      {item.MÉDIA.toFixed(2).replace('.', ',')}
+                      {item.NOTA.toFixed(2).replace('.', ',')}
                     </div>
                     <div className="text-[11px] text-slate-500 mt-1 whitespace-nowrap">
                       {item.globalRank}º/{item.totalEntities}

@@ -2,9 +2,15 @@ import React, { useMemo } from 'react';
 import { appData } from '../data/parser';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Line, Area } from 'recharts';
 import { ClipboardList, CheckCircle, TrendingDown } from 'lucide-react';
+import type { EntidadeSelecionada } from '../data/parser';
 
-export function FinancialPanel() {
-  const { selecionados } = appData;
+interface FinancialPanelProps {
+  data?: EntidadeSelecionada[];
+  theme?: 'fomento' | 'patrocinio';
+}
+
+export function FinancialPanel({ data = appData.fomento2026, theme = 'fomento' }: FinancialPanelProps) {
+  const selecionados = data;
 
   const summary = useMemo(() => {
     let totalProp = 0;
@@ -13,7 +19,7 @@ export function FinancialPanel() {
     // Some values might be missing or parsed as 0
     selecionados.forEach(item => {
       totalProp += item.VALOR_PROJETO || 0;
-      totalConc += item.VALOR_CONCEDENTE || 0;
+      totalConc += item.VALOR_REPASSE || 0;
     });
 
     return {
@@ -32,7 +38,7 @@ export function FinancialPanel() {
       }
       const data = map.get(reg)!;
       data.Projeto += item.VALOR_PROJETO || 0;
-      data.Concedido += item.VALOR_CONCEDENTE || 0;
+      data.Concedido += item.VALOR_REPASSE || 0;
     });
     return Array.from(map.values()).sort((a,b) => b.Projeto - a.Projeto);
   }, [selecionados]);
@@ -58,16 +64,21 @@ export function FinancialPanel() {
 
   const ORCAMENTO_TOTAL = 10000000;
 
+  const tColorPrimary = theme === 'fomento' ? '#008f4c' : '#f59e0b';
+  const tColorSecondary = theme === 'fomento' ? '#006837' : '#d97706';
+  const textPrimaryClass = theme === 'fomento' ? 'text-[#008f4c]' : 'text-amber-500';
+  const bgIconClass = theme === 'fomento' ? 'bg-green-50' : 'bg-amber-50';
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 bg-white border border-[#003865]/20 shadow-sm relative overflow-hidden flex items-center justify-start gap-5">
-          <div className="absolute top-0 right-0 w-2 h-full bg-[#008f4c] z-20"></div>
-          <div className="p-4 bg-green-50 rounded-lg shrink-0 relative z-10 w-[64px] h-[64px] flex items-center justify-center">
-            <CheckCircle className="text-[#008f4c]" size={32} />
+        <div className="p-6 bg-white border border-slate-200 shadow-sm relative overflow-hidden flex items-center justify-start gap-5">
+          <div className="absolute top-0 right-0 w-2 h-full z-20" style={{ backgroundColor: tColorPrimary }}></div>
+          <div className={`p-4 rounded-lg shrink-0 relative z-10 w-[64px] h-[64px] flex items-center justify-center ${bgIconClass}`}>
+            <CheckCircle className={textPrimaryClass} size={32} />
           </div>
           <div className="relative z-10">
-            <p className="text-sm font-medium text-[#008f4c] mb-1">Valor Concedido (Total Aprovado)</p>
+            <p className={`text-sm font-medium mb-1 ${textPrimaryClass}`}>Total de Repasse (Total Aprovado)</p>
             <div className="flex items-center gap-3 mb-1">
               <p className="text-3xl font-bold text-[#003865]">{formatBRL(summary.totalConcedido)}</p>
               <span className="flex items-center text-xs font-semibold bg-slate-100 text-slate-600 px-2 py-1 rounded">
@@ -80,7 +91,7 @@ export function FinancialPanel() {
           </div>
         </div>
         
-        <div className="p-6 bg-white border border-[#003865]/20 shadow-sm flex items-center justify-start gap-5">
+        <div className="p-6 bg-white border border-slate-200 shadow-sm flex items-center justify-start gap-5">
           <div className="p-4 bg-slate-50 rounded-lg shrink-0 flex items-center justify-center w-[64px] h-[64px]">
             <TrendingDown className="text-slate-500" size={32} />
           </div>
@@ -94,8 +105,8 @@ export function FinancialPanel() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="lg:col-span-2 p-6 bg-white border border-[#003865]/20 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2">Comparativo Solicitado vs. Concedido (Por Região)</h3>
+        <div className="lg:col-span-2 p-6 bg-white border border-slate-200 shadow-sm">
+          <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2">Comparativo Solicitado vs. Repassado (Por Região)</h3>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regionFinancial} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
@@ -105,16 +116,16 @@ export function FinancialPanel() {
                 <Tooltip formatter={(val: number) => formatBRL(val)} />
                 <Legend />
                 <Bar dataKey="Projeto" fill="#A0AAB2" name="Valor Solicitado" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Concedido" fill="#003865" name="Valor Concedido" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Concedido" fill={tColorSecondary} name="Valor de Repasse" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="p-6 bg-white border border-[#003865]/20 shadow-sm">
+        <div className="p-6 bg-white border border-slate-200 shadow-sm">
           <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2">Funil de Ajustes</h3>
           <p className="text-sm text-slate-600 mb-4">
-            Proporção de projetos que tiveram o valor concedente ajustado em relação à proposta original (identificado por 'sim' na coluna).
+            Proporção de projetos que tiveram o valor de repasse ajustado em relação à proposta original (identificado por 'sim' na coluna).
           </p>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -123,7 +134,7 @@ export function FinancialPanel() {
                 <XAxis type="number" />
                 <YAxis dataKey="name" type="category" width={110} tick={{fontSize: 12}} />
                 <Tooltip />
-                <Bar dataKey="items" fill="#008f4c" name="Qtd. Entidades" radius={[0, 4, 4, 0]} barSize={40} />
+                <Bar dataKey="items" fill={tColorPrimary} name="Qtd. Entidades" radius={[0, 4, 4, 0]} barSize={40} />
               </BarChart>
             </ResponsiveContainer>
           </div>

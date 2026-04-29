@@ -1,6 +1,6 @@
 {
-  "name": "Fomento Integrado Confea 2026",
-  "description": "Dashboard para acompanhamento integrado e visão financeira dos projetos de fomento selecionados no Chamamento Público nº 01/2026 (v1.0.0).",
+  "name": "Gestão de Repasses",
+  "description": "Plataforma para gestão integrada e acompanhamento financeiro de repasses de Fomento e Patrocínio do Confea.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
