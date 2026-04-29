@@ -84,12 +84,12 @@ export const parseData = () => {
       return key ? row[key] : '';
     };
 
-    let linhaSolicitada = getField('Linha') || 'Fomento 2025';
+    let linhaSolicitada = getField('Linha');
     // Mapeamento das linhas do Fomento
-    if (linhaSolicitada === '1') linhaSolicitada = 'Direcionamento Estratégico Local';
-    else if (linhaSolicitada === '2') linhaSolicitada = 'Identificação e Proposição de Soluções';
-    else if (linhaSolicitada === '3') linhaSolicitada = 'Mapeamento de Recursos';
-    else if (linhaSolicitada === '4') linhaSolicitada = 'Diagnóstico Preliminar';
+    if (linhaSolicitada === '1') linhaSolicitada = 'Atividade principal do Sistema Confea/Crea';
+    else if (linhaSolicitada === '2') linhaSolicitada = 'Transparência, Legalidade e Legitimidade do Sistema Confea/Crea';
+    else if (linhaSolicitada === '3') linhaSolicitada = 'Papel do Sistema Confea/Crea';
+    else linhaSolicitada = 'erro';
 
     const razaoSocial = getField('Razão Social') || row.Sigla || '';
 

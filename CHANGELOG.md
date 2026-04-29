@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0] - 2026-04-29
+
+### Adicionado / Melhorado
+- **Segurança da API Refatorada (IA Assistente):** Reestruturação profunda na arquitetura do Assistente de Inteligência Artificial para garantir segurança no tráfego da API Key.
+- **Integração Backend/Node.js:** A aplicação, originalmente executando um modelo Client-Side (SPA) puramente no navegador, foi promovida a arquitetura Full-Stack com servidor Node.js/Express (`server.ts`).
+- **Endpoint Exclusivo de AI (`/api/chat`):** A comunicação com o SDK do Google GenAI migrou totalmente para o ambiente seguro do backend, impedindo que a VITE_GEMINI_API_KEY ou qualquer outra chave sensível seja exposta (via DevTools/Network) no navegador do usuário final.
+- **Scripts de Build e Deploy Adaptados:** Atualização dos pacotes (`tsx`), adaptação no pipeline do Vite (Vite as Middleware), e configuração customizada do `package.json` + `vercel.json` para assegurar o funcionamento pleno tanto no ambiente de dev local/AI Studio (0.0.0.0, porta 3000) quanto no deploy contínuo em nuvem via Vercel.
+
 ## [1.5.0] - 2026-04-29
 
 ### Adicionado / Melhorado
