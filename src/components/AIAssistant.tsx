@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, AlertCircle, Sparkles } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -30,8 +29,6 @@ export function AIAssistant() {
     setLoading(true);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      
       // Preparing context with compact representation
       const contextData = {
         fomento2025: appData.fomentoHistorico.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Objetivo: d.OBJETIVO })),
@@ -39,32 +36,25 @@ export function AIAssistant() {
         patrocinio2025: appData.patrocinioHistorico.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Projeto: d.OBJETIVO }))
       };
 
-      const systemInstruction = `Você é um assistente de IA integrado ao sistema de Fomento e Patrocínio.
-Sua função é gerar relatórios e responder perguntas EXCLUSIVAMENTE com base nestes dados:
-${JSON.stringify(contextData)}
-
-REGRAS ESTABELECIDAS:
-1. RESPONDA APENAS SOBRE FOMENTO E PATROCÍNIO.
-2. Recuse educadamente qualquer assunto fora deste escopo, citando regras de conduta.
-3. Não emita opiniões pessoais ou invente dados.
-4. Formate as respostas utilizando Markdown para criar relatórios estruturados, claros e cordiais.`;
-
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: [
-            ...messages.map(m => ({
-               role: m.role,
-               parts: [{ text: m.text }]
-            })),
-            { role: 'user', parts: [{ text: userText }] }
-        ],
-        config: {
-            systemInstruction,
-            temperature: 0.1
-        }
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          messages,
+          userText,
+          contextData
+        })
       });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro desconhecido no servidor.');
+      }
 
-      setMessages(prev => [...prev, { role: 'model', text: response.text || '' }]);
+      setMessages(prev => [...prev, { role: 'model', text: data.text || '' }]);
     } catch (error: any) {
       console.error(error);
       setMessages(prev => [...prev, { role: 'model', text: `**Erro ao consultar a base de dados via IA:** ${error.message}` }]);
