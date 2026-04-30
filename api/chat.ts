@@ -1,39 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import fs from 'fs';
-import path from 'path';
-
-let pdfContextCache: string | null = null;
-
-async function getPdfContext() {
-  if (pdfContextCache !== null) return pdfContextCache;
-  const dir = path.join(process.cwd(), 'editais');
-  if (!fs.existsSync(dir)) {
-    pdfContextCache = "";
-    return pdfContextCache;
-  }
-
-  // To require pdf-parse dynamically safely in ESM
-  const require = (await import('module')).createRequire(import.meta.url);
-  const pdfParse = require('pdf-parse');
-
-  const files = fs.readdirSync(dir).filter(f => f.toLowerCase().endsWith('.pdf'));
-  let combinedText = "";
-
-  for (const file of files) {
-    try {
-      const dataBuffer = fs.readFileSync(path.join(dir, file));
-      const data = await pdfParse(dataBuffer);
-      combinedText += `\n--- INÍCIO DO DOCUMENTO: ${file} ---\n`;
-      combinedText += data.text;
-      combinedText += `\n--- FIM DO DOCUMENTO: ${file} ---\n`;
-    } catch (e) {
-      console.error(`Erro ao processar o arquivo ${file}:`, e);
-    }
-  }
-
-  pdfContextCache = combinedText;
-  return pdfContextCache;
-}
+import { EDITAIS_CONTEXT } from '../src/editais-context.js';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
@@ -51,7 +17,7 @@ export default async function handler(req: any, res: any) {
 
     const ai = new GoogleGenAI({ apiKey });
     
-    const extraContextText = await getPdfContext();
+    const extraContextText = EDITAIS_CONTEXT;
 
     const systemInstruction = `Você é um assistente de IA integrado ao sistema de Fomento e Patrocínio.
 Sua função é gerar relatórios e responder perguntas EXCLUSIVAMENTE com base nestes dados:

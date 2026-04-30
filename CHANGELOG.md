@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.10.1] - 2026-04-30
+
+### Corrigido
+- **Correção Geral no Endpoint de IA (`/api/chat`):** Resolvido o erro crítico de dependência (`Cannot find module 'pdf-parse'`) que ocorria durante a consulta em ambientes de produção e nuvem, que ocasionava falhas ao acionar a IA.
+- **RAG Compilado (Build-time RAG):** Para sanar os problemas de resolução de dependências CJS no ambiente de build-deploy e limites de memória, a estratégia de leitura de PDFs e base de conhecimento foi convertida de "runtime" para "build-time". Todos os documentos oficiais (Editais, Portarias, Decisões) agora são pré-compilados como dados nativos no projeto (`editais-context.ts`), garantindo máxima performance, tempo de resposta síncrono instantâneo e redução drástica do tempo de boot e consumo da cloud sem perder dados das normativas.
+
 ## [1.10.0] - 2026-04-30
 
 ### Adicionado / Melhorado
