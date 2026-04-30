@@ -147,7 +147,7 @@ export default function App() {
         </header>
 
         <div className="flex-1 overflow-auto p-8">
-          <div className="max-w-7xl mx-auto h-full">
+          <div className="w-full max-w-[1920px] mx-auto h-full">
             {activeTab === 'overview' && <Overview />}
             {activeTab === 'current_directory' && <Directory />}
             {activeTab === 'current_fiscal' && <FiscalView />}

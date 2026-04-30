@@ -285,6 +285,10 @@ export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
                         item.CATEGORIA === "Evento" ? "bg-purple-50 text-purple-700 border-purple-200" :
                         item.CATEGORIA === "Revista" ? "bg-pink-50 text-pink-700 border-pink-200" :
                         item.CATEGORIA === "Livro" ? "bg-cyan-50 text-cyan-700 border-cyan-200" :
+                        item.CATEGORIA === "Atividade principal do Sistema Confea/Crea" ? "bg-indigo-50 text-indigo-700 border-indigo-200" :
+                        item.CATEGORIA === "Transparência, Legalidade e Legitimidade do Sistema Confea/Crea" ? "bg-teal-50 text-teal-700 border-teal-200" :
+                        item.CATEGORIA === "Papel do Sistema Confea/Crea" ? "bg-rose-50 text-rose-700 border-rose-200" :
+                        item.CATEGORIA === "erro" ? "bg-red-50 text-red-700 border-red-200" :
                         "bg-slate-100 text-slate-600 border-slate-200"
                       )} title={item.CATEGORIA || "Não definido"}>
                         {item.OBJETIVO || "Não definido"}
