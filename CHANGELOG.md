@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Integração de Base de Conhecimento Legada (PDFs):** Ingestão e processamento de editais, portarias, normativas e leis no Assistente de IA de forma autônoma (via \`pdf-parse\`).
+- **Contexto Avançado (RAG Simplificado):** O assistente virtual agora consome os textos completos dos regulamentos oficiais, resultando em respostas significativamente mais precisas, embasadas e aderentes às bases jurídicas dos programas de Fomento e Patrocínio e Licitações & Contratos.
+- Nova versão principal ("minor bump") marcando um progresso substancial na arquitetura de IA embutida na plataforma, agora munida de documentação proprietária contextual para análise técnica.
+
 ## [1.9.1] - 2026-04-30
 
 ### Adicionado / Melhorado
