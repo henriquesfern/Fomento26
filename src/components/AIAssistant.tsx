@@ -8,15 +8,29 @@ import 'katex/dist/katex.min.css';
 import { appData } from '../data/parser';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-function ChartRenderer({ node, inline, className, children, ...props }: any) {
+function ChartRenderer({ node, className, children, ...props }: any) {
   const match = /language-(\w+)/.exec(className || '');
-  if (!inline && match && match[1] === 'json-chart') {
+  const lang = match ? match[1] : '';
+  const codeString = String(children).trim();
+
+  const isChartConfig = 
+    lang === 'json-chart' || 
+    lang === 'jsonchart' ||
+    (lang === 'json' && codeString.includes('"type":') && codeString.includes('"data":'));
+
+  if (isChartConfig) {
     try {
-      const config = JSON.parse(String(children).replace(/\n$/, ''));
+      // Strip any potential comments or fix trailing commas the AI might mistakenly generate
+      const cleanJson = codeString
+        .replace(/\/\/.*$/gm, '') 
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']');
+        
+      const config = JSON.parse(cleanJson);
       const COLORS = [config.color || '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
       
       return (
-        <div className="w-full h-72 my-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+        <div className="w-full h-72 my-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm not-prose">
           <ResponsiveContainer width="100%" height="100%">
             {config.type === 'bar' ? (
               <BarChart data={config.data}>
@@ -64,9 +78,13 @@ function ChartRenderer({ node, inline, className, children, ...props }: any) {
           </ResponsiveContainer>
         </div>
       );
-    } catch(e) {
+    } catch(e: any) {
       console.error("Error rendering chart:", e);
-      return <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200 my-4">Erro ao renderizar gráfico. Verifique o console.</div>;
+      return (
+        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200 my-4 not-prose">
+          Erro ao renderizar gráfico. Verifique o console: {e.message}
+        </div>
+      );
     }
   }
   return <code className={className} {...props}>{children}</code>;

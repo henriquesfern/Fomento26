@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.1] - 2026-04-30
+
+### Corrigido
+- **Falha de Renderização de Gráficos na IA:** Ajuste rigoroso no modelo da IA e no interceptador Markdown (`ChartRenderer`). A IA ocasionalmente enviava o JSON do gráfico com formatação de comentários suportada por Javascript, mas que quebrava o parse JSON, ou falhava na injeção correta da tag markdown de "codeblock". O prompt interno do sistema foi reescrito para reforçar formato JSON estrito, além de aprimorar a tolerância a falhas na leitura JSON no front-end para evitar a saída visual de código cru.
+
 ## [1.11.0] - 2026-04-30
 
 ### Adicionado / Melhorado

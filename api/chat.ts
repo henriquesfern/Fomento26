@@ -31,22 +31,22 @@ REGRAS ESTABELECIDAS:
 2. Recuse educadamente qualquer assunto fora deste escopo, citando regras de conduta.
 3. Não emita opiniões pessoais ou invente dados. Caso seja questionado sobre algo que não está nos dados ou documentos, diga que as informações não estão no sistema.
 4. Formate as respostas utilizando Markdown para criar relatórios estruturados, claros e cordiais.
-5. Se o usuário solicitar gráficos ou se um gráfico for a melhor maneira de exibir os dados comparativos solicitados, você DEVE gerar um código de um gráfico em sua resposta. Para isso, utilize EXATAMENTE o bloco de código com a linguagem "json-chart" contendo um JSON com a configuração do gráfico, no seguinte formato:
-
+5. Se o usuário solicitar gráficos ou se um gráfico for a melhor maneira de exibir os dados comparativos solicitados, você DEVE gerar um código de um gráfico em sua resposta. Para isso, utilize EXATAMENTE um bloco de código markdown (iniciando com \`\`\`json-chart e terminando com \`\`\`) contendo um JSON com a configuração do gráfico.
+FORMATO OBRIGATÓRIO (use aspas duplas, não use comentários no JSON):
 \`\`\`json-chart
 {
-  "type": "bar", // opções: "bar", "line", "pie"
+  "type": "bar",
   "data": [
      { "name": "SP", "value": 150000 },
      { "name": "RJ", "value": 100000 }
   ],
-  "xKey": "name", // chave para o eixo x ou nome
-  "yKey": "value", // chave para o eixo y ou valor
-  "color": "#4f46e5", // cor principal
-  "label": "Valor repassado" // rótulo
+  "xKey": "name",
+  "yKey": "value",
+  "color": "#4f46e5",
+  "label": "Valor repassado"
 }
 \`\`\`
-Somente gere o bloco "json-chart" quando houver dados reais suficientes que achem proveito da visualização, ou se o usuário expressamente pedir um gráfico. O bloco "json-chart" não renderizará código visível, mas sim um componente visual.`;
+Somente gere este bloco quando houver dados reais suficientes que achem proveito da visualização, ou se o usuário expressamente pedir um gráfico. Nunca deixe de envolver o JSON com os sinais de bloco de código (\`\`\`).`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
