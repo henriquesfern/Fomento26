@@ -6,6 +6,71 @@ import rehypeKatex from 'rehype-katex';
 import Markdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import { appData } from '../data/parser';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+function ChartRenderer({ node, inline, className, children, ...props }: any) {
+  const match = /language-(\w+)/.exec(className || '');
+  if (!inline && match && match[1] === 'json-chart') {
+    try {
+      const config = JSON.parse(String(children).replace(/\n$/, ''));
+      const COLORS = [config.color || '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+      
+      return (
+        <div className="w-full h-72 my-6 bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+          <ResponsiveContainer width="100%" height="100%">
+            {config.type === 'bar' ? (
+              <BarChart data={config.data}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey={config.xKey} tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} width={80} />
+                <Tooltip 
+                  cursor={{fill: '#f1f5f9'}} 
+                  contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                />
+                <Bar dataKey={config.yKey} name={config.label || "Valor"} fill={config.color || "#4f46e5"} radius={[4, 4, 0, 0]} />
+              </BarChart>
+            ) : config.type === 'line' ? (
+              <LineChart data={config.data}>
+                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                 <XAxis dataKey={config.xKey} tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                 <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} width={80} />
+                 <Tooltip 
+                   contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                 />
+                 <Line type="monotone" dataKey={config.yKey} name={config.label || "Valor"} stroke={config.color || "#4f46e5"} strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
+              </LineChart>
+            ) : config.type === 'pie' ? (
+              <PieChart>
+                 <Pie
+                   data={config.data}
+                   cx="50%"
+                   cy="50%"
+                   labelLine={false}
+                   outerRadius={90}
+                   fill="#8884d8"
+                   dataKey={config.yKey}
+                   nameKey={config.xKey}
+                   label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                 >
+                   {config.data.map((entry: any, index: number) => (
+                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                   ))}
+                 </Pie>
+                 <Tooltip contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
+              </PieChart>
+            ) : (
+                <div className="flex items-center justify-center h-full text-slate-500">Tipo de gráfico não suportado.</div>
+            )}
+          </ResponsiveContainer>
+        </div>
+      );
+    } catch(e) {
+      console.error("Error rendering chart:", e);
+      return <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm border border-red-200 my-4">Erro ao renderizar gráfico. Verifique o console.</div>;
+    }
+  }
+  return <code className={className} {...props}>{children}</code>;
+}
 
 export function AIAssistant() {
   const [query, setQuery] = useState('');
@@ -117,10 +182,11 @@ export function AIAssistant() {
               {msg.role === 'user' ? (
                 <p className="whitespace-pre-wrap">{msg.text}</p>
               ) : (
-                <div className="markdown-body prose prose-sm max-w-none prose-slate prose-p:leading-relaxed prose-pre:bg-slate-100 prose-pre:text-slate-800">
+                <div className="markdown-body prose prose-sm max-w-none prose-slate prose-p:leading-relaxed prose-pre:bg-transparent prose-pre:p-0 prose-pre:text-slate-800">
                   <Markdown 
                     remarkPlugins={[remarkGfm, remarkMath]} 
                     rehypePlugins={[rehypeKatex]}
+                    components={{ code: ChartRenderer }}
                   >
                     {msg.text}
                   </Markdown>

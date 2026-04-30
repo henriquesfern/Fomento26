@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.11.0] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Gráficos Dinâmicos com IA (Zero Custo):** A IA agora analisa os dados estruturados de fomento e patrocínio e, se for útil para a visualização, é capaz de retornar uma estruturta declarativa JSON diretamente na resposta markdown usando a linguagem customizada `json-chart`. O frontend intercepta via react-markdown e renderiza automaticamente gráficos reais interativos (BarChart, LineChart e PieChart) com a biblioteca `recharts`, mantendo toda a execução no lado do cliente com dados contextuais locais sem consumir nenhuma API paga externa para geração de imagens. Estrutura sem custos mantida com sucesso!
+
 ## [1.10.1] - 2026-04-30
 
 ### Corrigido
