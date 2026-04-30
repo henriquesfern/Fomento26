@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.1] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Aprimoramento do Tooltip Geográfico ("Visão Geral Corrente" e "Histórico"):**
+  - **Ranking de Estados:** Adicionada a classificação do estado em relação ao total de repasse ao lado do nome e sigla no tooltip (ex: São Paulo (SP) (1º)).
+  - **Proporcionalidade Geográfica:** Inclusão explícita da proporção percentual que o repasse do estado representa em relação ao montante global da análise.
+  - O mesmo foi feito para a linha contendo os valores da região.
+
 ## [1.9.0] - 2026-04-30
 
 ### Adicionado / Melhorado
