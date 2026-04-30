@@ -110,7 +110,9 @@ export function StateForceView() {
                 cursor={{ strokeDasharray: '3 3' }} 
                 formatter={(val: number) => formatBRL(val)} 
                 labelFormatter={() => ''} 
-                contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
+                labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
               />
               <Scatter data={stateForceArr} fill="#8884d8" shape={(props) => <CustomScatterShape {...props} maxTotal={maxTotal} />} />
             </ScatterChart>

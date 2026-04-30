@@ -158,6 +158,9 @@ export function FiscalView({ data = appData.fomento2026 }: FiscalViewProps) {
                   }}
                   labelFormatter={(name) => `Fiscal: ${chartData.find(d => d.name === name)?.fullName || name}`}
                   cursor={{fill: '#f1f5f9'}}
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                  itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
+                  labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
                 />
                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
                 <Bar dataKey="volumeFomento" stackId="a" fill="#008f4c" name="Fomento">

@@ -163,14 +163,7 @@ export default function App() {
             {activeTab === 'history_entidades' && <GlobalEntitiesOverview />}
             {activeTab === 'history_entidades_dir' && <GlobalDirectory />}
 
-            {/* Em Desenvolvimento Placeholders */}
-            {(
-              activeTab === 'history'
-            ) && (
-              <div className="flex items-center justify-center h-full text-slate-500">
-                <p>Módulo em desenvolvimento.</p>
-              </div>
-            )}
+            {activeTab === 'history' && <Overview data={[...appData.fomentoHistorico, ...appData.patrocinioHistorico]} theme="history" showEntityCount={true} />}
             
             {activeTab === 'insights' && <InsightsView />}
             {activeTab === 'insights_forca' && <StateForceView />}

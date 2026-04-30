@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Aprimoramento do Tooltip Geográfico (Histórico):** Incluídas as linhas específicas de "Fomento" e "Patrocínio" no mapa da aba Histórico, aplicando o mesmo padrão de cores e hierarquia consolidada na visualização global de entidades.
+- **Padronização Visual de Tooltips:** Uniformidade visual dos painéis de informações (tooltips) sobrepostos nos gráficos das análises. Integrado o padrão visual escuro de alto contraste (estilo slate-900 / dark mode) globalmente em todos os gráficos de barras, linhas, dispersão e de rosca usando atributos de UI/UX personalizados.
+- **Gráfico de "Distribuição por Grupo":** Realinhamento visual de dimensão. O gráfico de rosca que distingue grupos de atuação (CDEN, Precursoras, etc) foi redimensionado para adequar-se à importância relativa visual. Acrescidos ao tooltip os montantes monetários e a contagem explícita de "Entidades Atendidas" contemplando o cálculo da expressividade (porcentagens).
+- **Indicadores de Mapas Topográficos:** O tooltip de regiões contendo estados nos mapas flutuantes foi remodelado em listagem estruturada ao invés de linhas embutidas, passando a discriminar separadamente: Valor do Estado, Valor da Região, e Total de Entidades, garantindo maior transparência e coesão das análises geográficas focadas em contexto multi-nível.
+
 ## [1.6.0] - 2026-04-29
 
 ### Adicionado / Melhorado

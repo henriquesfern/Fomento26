@@ -154,7 +154,12 @@ export function InsightsView() {
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number) => formatBRL(value)} />
+                    <Tooltip 
+                      formatter={(value: number) => formatBRL(value)}
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                      itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
+                      labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -215,7 +220,12 @@ export function InsightsView() {
                         <Cell key={`cell-${index}`} fill={TYPE_COLORS[index % TYPE_COLORS.length]} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={(value: number) => formatBRL(value)} />
+                    <Tooltip 
+                      formatter={(value: number) => formatBRL(value)}
+                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                      itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
+                      labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
@@ -274,7 +284,12 @@ export function InsightsView() {
                 </defs>
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 13}} />
                 <YAxis axisLine={false} tickLine={false} tickFormatter={(val) => `R$ ${(val / 1000000).toFixed(1)}M`} tick={{fill: '#64748b', fontSize: 12}} />
-                <Tooltip formatter={(value: number) => formatBRL(value)} />
+                <Tooltip 
+                  formatter={(value: number) => formatBRL(value)}
+                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
+                  itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
+                  labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
+                />
                 <Legend verticalAlign="top" height={36} iconType="circle" />
                 <Area type="monotone" name="Fomento" dataKey="Fomento" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorFomento)" />
                 <Area type="monotone" name="Patrocínio" dataKey="Patrocínio" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorPatrocinio)" />

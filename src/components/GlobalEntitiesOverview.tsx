@@ -63,7 +63,7 @@ export function GlobalEntitiesOverview() {
 
   const maxTotal = useMemo(() => Math.max(...Array.from(aggregatedData.values()).map(d => d.TOTAL), 1), [aggregatedData]);
 
-  const colorScaleTotal = scaleLinear<string>().domain([0, maxTotal]).range(["#e5e7eb", "#003865"]);
+  const colorScaleTotal = scaleLinear<string>().domain([0, maxTotal]).range(["#E0E3E8", "#0A3864"]);
 
   const mapProjection = useMemo(() => {
     const projection = geoMercator();
@@ -101,7 +101,7 @@ export function GlobalEntitiesOverview() {
                     <Geography
                       key={geo.rsmKey}
                       geography={geo}
-                      fill={val > 0 ? colorScaleTotal(val) : "#fecaca"}
+                      fill={val > 0 ? colorScaleTotal(val) : "#FFF0F0"}
                       stroke="#ffffff"
                       strokeWidth={0.5}
                       style={{
