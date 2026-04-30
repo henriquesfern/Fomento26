@@ -60,7 +60,7 @@ export default function App() {
       <button 
         onClick={() => setActiveTab(id)}
         className={cn(
-          "w-full flex items-center py-2.5 rounded-md transition-colors text-left",
+          "w-full flex items-center py-2 rounded-md transition-colors text-left",
           depth === 0 ? "px-4" : depth === 1 ? "pl-8 pr-4 text-sm" : "pl-12 pr-4 text-sm",
           activeTab === id ? "bg-[#002b4d] border-l-4 border-[#008f4c] text-white" : t.colors.sidebarItemHover,
           activeTab !== id && depth > 0 ? "text-slate-300" : "text-white"
@@ -97,18 +97,18 @@ export default function App() {
     <div className={cn("min-h-screen flex h-screen overflow-hidden font-sans", t.colors.bg, t.colors.text)}>
       {/* SIDEBAR */}
       <aside className={cn("w-64 flex flex-col pt-6 shrink-0 z-10 relative shadow-xl overflow-y-auto overflow-x-hidden", t.colors.sidebar)}>
-        <div className="px-6 mb-8">
+        <div className="px-6 mb-6">
           <h1 className="font-bold text-xl tracking-tight leading-tight">Gestão de<br/>Repasses</h1>
           <div className="h-1 w-12 bg-[#008f4c] mt-3"></div>
         </div>
         
-        <nav className="flex-1 space-y-1 pb-6 px-3">
+        <nav className="flex-1 space-y-0.5 pb-4 px-3">
           {renderMenuItem('overview', 'Visão Geral Corrente', LayoutDashboard, 0)}
           {renderMenuItem('current_directory', 'Diretório de Entidades', List, 1)}
           {renderMenuItem('current_fiscal', 'Visão do Fiscal', UserCheck, 1)}
           {renderMenuItem('current_financial', 'Painel Financeiro', LineChart, 1)}
           
-          <div className="my-4 border-t border-white/10 mx-2"></div>
+          <div className="my-2 border-t border-white/10 mx-2"></div>
           
           {renderMenuItem('history', 'Histórico (2025)', History, 0)}
           {renderMenuItem('history_fomento', 'Fomento (2025)', TableProperties, 1)}
@@ -122,12 +122,12 @@ export default function App() {
           {renderMenuItem('history_entidades', 'Entidades (2025)', Users, 1)}
           {renderMenuItem('history_entidades_dir', 'Diretório de Entidades', List, 2)}
           
-          <div className="my-4 border-t border-white/10 mx-2"></div>
+          <div className="my-2 border-t border-white/10 mx-2"></div>
           
           {renderMenuItem('insights', 'Insights e Análises', Lightbulb, 0)}
           {renderMenuItem('insights_forca', 'Força por Estado', LayoutDashboard, 1)}
 
-          <div className="my-4 border-t border-white/10 mx-2"></div>
+          <div className="my-2 border-t border-white/10 mx-2"></div>
           
           {renderMenuItem('ai_assistant', 'IA - Consulta', Sparkles, 0)}
         </nav>
