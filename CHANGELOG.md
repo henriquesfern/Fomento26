@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.9.0] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Reorganização Estrutural de Gráficos:** O gráfico de "Evolução de Orçamento" (comparativo de repasses entre 2025 e 2026) foi migrado da aba de "Insights e Análises" para a aba principal de "Histórico".
+- O gráfico agora se encontra estrategicamente posicionado como um resumo executivo logo abaixo dos indicadores (KPI) de "Total de Repasse" e "Entidades Selecionadas", ocupando um terço de sua altura original para atuar como um panorama visual sutil e eficiente no contexto de histórico.
+
+## [1.8.1] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Identificação de Período nas Abas de Histórico:** Incluída a referência explicita ao ano "(2025)" ao título da aba principal de "Histórico" e em todas as suas subseções ("Fomento", "Patrocínio" e "Entidades"), prevendo a futura inclusão de dados de múltiplos anos.
+
 ## [1.8.0] - 2026-04-30
 
 ### Adicionado / Melhorado

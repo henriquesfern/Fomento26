@@ -78,15 +78,15 @@ export default function App() {
       case 'current_directory': return 'Diretório de Entidades';
       case 'current_fiscal': return 'Visão do Fiscal';
       case 'current_financial': return 'Painel Financeiro';
-      case 'history': return 'Histórico';
-      case 'history_fomento': return 'Histórico - Fomento';
-      case 'history_fomento_dir': return 'Diretório de Entidades (Fomento)';
-      case 'history_fomento_fin': return 'Painel Financeiro (Fomento)';
-      case 'history_patrocinio': return 'Histórico - Patrocínio';
-      case 'history_patrocinio_dir': return 'Diretório de Entidades (Patrocínio)';
-      case 'history_patrocinio_fin': return 'Painel Financeiro (Patrocínio)';
-      case 'history_entidades': return 'Histórico - Entidades';
-      case 'history_entidades_dir': return 'Diretório de Entidades';
+      case 'history': return 'Histórico (2025)';
+      case 'history_fomento': return 'Histórico - Fomento (2025)';
+      case 'history_fomento_dir': return 'Diretório de Entidades (Fomento - 2025)';
+      case 'history_fomento_fin': return 'Painel Financeiro (Fomento - 2025)';
+      case 'history_patrocinio': return 'Histórico - Patrocínio (2025)';
+      case 'history_patrocinio_dir': return 'Diretório de Entidades (Patrocínio - 2025)';
+      case 'history_patrocinio_fin': return 'Painel Financeiro (Patrocínio - 2025)';
+      case 'history_entidades': return 'Histórico - Entidades (2025)';
+      case 'history_entidades_dir': return 'Diretório de Entidades (Histórico - 2025)';
       case 'insights': return 'Insights e Análises';
       case 'insights_forca': return 'Força por Estado';
       case 'ai_assistant': return 'IA - Consulta de Dados';
@@ -110,16 +110,16 @@ export default function App() {
           
           <div className="my-4 border-t border-white/10 mx-2"></div>
           
-          {renderMenuItem('history', 'Histórico', History, 0)}
-          {renderMenuItem('history_fomento', 'Fomento', TableProperties, 1)}
+          {renderMenuItem('history', 'Histórico (2025)', History, 0)}
+          {renderMenuItem('history_fomento', 'Fomento (2025)', TableProperties, 1)}
           {renderMenuItem('history_fomento_dir', 'Diretório de Entidades', List, 2)}
           {renderMenuItem('history_fomento_fin', 'Painel Financeiro', LineChart, 2)}
           
-          {renderMenuItem('history_patrocinio', 'Patrocínio', TableProperties, 1)}
+          {renderMenuItem('history_patrocinio', 'Patrocínio (2025)', TableProperties, 1)}
           {renderMenuItem('history_patrocinio_dir', 'Diretório de Entidades', List, 2)}
           {renderMenuItem('history_patrocinio_fin', 'Painel Financeiro', LineChart, 2)}
           
-          {renderMenuItem('history_entidades', 'Entidades', Users, 1)}
+          {renderMenuItem('history_entidades', 'Entidades (2025)', Users, 1)}
           {renderMenuItem('history_entidades_dir', 'Diretório de Entidades', List, 2)}
           
           <div className="my-4 border-t border-white/10 mx-2"></div>
