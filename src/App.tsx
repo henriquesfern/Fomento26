@@ -94,7 +94,14 @@ export default function App() {
   };
 
   return (
-    <div className={cn("min-h-screen flex h-screen overflow-hidden font-sans", t.colors.bg, t.colors.text)}>
+    <div className={cn("relative min-h-screen flex h-screen overflow-hidden font-sans", t.colors.bg, t.colors.text)}>
+      {/* RIBBON FICTÍCIO */}
+      <div className="fixed top-0 right-0 z-[100] pointer-events-none w-40 h-40 overflow-hidden">
+        <div className="absolute top-8 -right-14 w-64 bg-red-600 text-white text-[10px] font-bold py-1.5 text-center uppercase tracking-widest transform rotate-45 shadow-lg">
+          Em Desenvolvimento
+        </div>
+      </div>
+
       {/* SIDEBAR */}
       <aside className={cn("w-64 flex flex-col pt-6 shrink-0 z-10 relative shadow-xl overflow-y-auto overflow-x-hidden", t.colors.sidebar)}>
         <div className="px-6 mb-6">

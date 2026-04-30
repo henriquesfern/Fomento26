@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0] - 2026-04-30
+
+### Adicionado / Melhorado
+- **Geração de Gráficos Sob Demanda:** A visualização de dados via IA agora ocorre estritamente por solicitação explícita do usuário na Área de Consulta, evitando poluição visual com gráficos não solicitados, e apresentando relatórios mais limpos por padrão.
+- **Identificação Visual de Desenvolvimento:** Adicionado um *ribbon* (marcador diagonal vermelho) no canto superior direito do painel informando "Em Desenvolvimento", visando mitigar interpretações de usuários finais quanto ao status dos dados e maturidade da aplicação na versão atual.
+- **Refinamento do Menu Lateral:** Ajuste no espaçamento e tamanho tipográfico da árvore de links no menu lateral esquerdo da aplicação, otimizando o preenchimento em tela e eliminando o surgimento da barra de rolagem vertical não desejada.
+
 ## [1.11.1] - 2026-04-30
 
 ### Corrigido
