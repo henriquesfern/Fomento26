@@ -1,0 +1,163 @@
+value;rank;color;sigla_uf;state_id;dimension_id;dimension_name
+11,28;27;1;AC;12;dim_saneamento_basico;SANEAMENTO BÁSICO
+46,7;17;2;AL;27;dim_saneamento_basico;SANEAMENTO BÁSICO
+45,28;18;2;AM;13;dim_saneamento_basico;SANEAMENTO BÁSICO
+46,79;16;2;AP;16;dim_saneamento_basico;SANEAMENTO BÁSICO
+39,74;24;1;BA;29;dim_saneamento_basico;SANEAMENTO BÁSICO
+51,19;14;2;CE;23;dim_saneamento_basico;SANEAMENTO BÁSICO
+80,19;1;3;DF;53;dim_saneamento_basico;SANEAMENTO BÁSICO
+64,06;6;3;ES;32;dim_saneamento_basico;SANEAMENTO BÁSICO
+55,57;10;2;GO;52;dim_saneamento_basico;SANEAMENTO BÁSICO
+18,85;26;1;MA;21;dim_saneamento_basico;SANEAMENTO BÁSICO
+64,34;5;3;MG;31;dim_saneamento_basico;SANEAMENTO BÁSICO
+54,42;11;2;MS;50;dim_saneamento_basico;SANEAMENTO BÁSICO
+56,56;9;3;MT;51;dim_saneamento_basico;SANEAMENTO BÁSICO
+40,72;23;1;PA;15;dim_saneamento_basico;SANEAMENTO BÁSICO
+43,96;20;1;PB;25;dim_saneamento_basico;SANEAMENTO BÁSICO
+31,02;25;1;PE;26;dim_saneamento_basico;SANEAMENTO BÁSICO
+42,96;22;1;PI;22;dim_saneamento_basico;SANEAMENTO BÁSICO
+76,29;2;3;PR;41;dim_saneamento_basico;SANEAMENTO BÁSICO
+59,18;8;3;RJ;33;dim_saneamento_basico;SANEAMENTO BÁSICO
+42,97;21;1;RN;24;dim_saneamento_basico;SANEAMENTO BÁSICO
+53,12;12;2;RO;11;dim_saneamento_basico;SANEAMENTO BÁSICO
+44,22;19;1;RR;14;dim_saneamento_basico;SANEAMENTO BÁSICO
+67,05;4;3;RS;43;dim_saneamento_basico;SANEAMENTO BÁSICO
+73,85;3;3;SC;42;dim_saneamento_basico;SANEAMENTO BÁSICO
+52,22;13;2;SE;28;dim_saneamento_basico;SANEAMENTO BÁSICO
+60,29;7;3;SP;35;dim_saneamento_basico;SANEAMENTO BÁSICO
+50,13;15;2;TO;17;dim_saneamento_basico;SANEAMENTO BÁSICO
+22,43;25;1;AC;12;dim_agua;ÁGUA
+37,92;21;1;AL;27;dim_agua;ÁGUA
+44,79;17;2;AM;13;dim_agua;ÁGUA
+20,44;26;1;AP;16;dim_agua;ÁGUA
+66,24;8;3;BA;29;dim_agua;ÁGUA
+54,67;14;2;CE;23;dim_agua;ÁGUA
+73,04;2;3;DF;53;dim_agua;ÁGUA
+61,1;12;2;ES;32;dim_agua;ÁGUA
+70,3;4;3;GO;52;dim_agua;ÁGUA
+36,22;22;1;MA;21;dim_agua;ÁGUA
+65,23;9;3;MG;31;dim_agua;ÁGUA
+69,68;5;3;MS;50;dim_agua;ÁGUA
+66,44;7;3;MT;51;dim_agua;ÁGUA
+13,59;27;1;PA;15;dim_agua;ÁGUA
+40;20;1;PB;25;dim_agua;ÁGUA
+40,1;19;1;PE;26;dim_agua;ÁGUA
+44,42;18;2;PI;22;dim_agua;ÁGUA
+61,87;10;2;PR;41;dim_agua;ÁGUA
+55,57;13;2;RJ;33;dim_agua;ÁGUA
+29,2;24;1;RN;24;dim_agua;ÁGUA
+32,09;23;1;RO;11;dim_agua;ÁGUA
+47,62;16;2;RR;14;dim_agua;ÁGUA
+61,66;11;2;RS;43;dim_agua;ÁGUA
+72,3;3;3;SC;42;dim_agua;ÁGUA
+54,3;15;2;SE;28;dim_agua;ÁGUA
+73,07;1;3;SP;35;dim_agua;ÁGUA
+67,11;6;3;TO;17;dim_agua;ÁGUA
+47,59;15;2;AC;12;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+37,32;21;1;AL;27;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+55,47;10;2;AM;13;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+56,66;9;3;AP;16;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+34,24;22;1;BA;29;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+24,75;25;1;CE;23;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+87,08;1;3;DF;53;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+47,16;16;2;ES;32;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+53,32;11;2;GO;52;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+46,5;17;2;MA;21;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+68,85;3;3;MG;31;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+42,74;18;2;MS;50;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+62,75;5;3;MT;51;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+40,94;19;1;PA;15;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+31,87;23;1;PB;25;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+29;24;1;PE;26;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+24,25;26;1;PI;22;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+59,14;8;3;PR;41;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+72,36;2;3;RJ;33;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+22,91;27;1;RN;24;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+50,5;12;2;RO;11;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+48,68;14;2;RR;14;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+61,56;7;3;RS;43;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+61,57;6;3;SC;42;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+40,45;20;1;SE;28;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+64,06;4;3;SP;35;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+49,96;13;2;TO;17;dim_meio_ambiente_e_resiliencia;MEIO AMBIENTE E RESILIÊNCIA
+20,86;25;1;AC;12;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+47,82;18;2;AL;27;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+20,22;27;1;AM;13;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+20,54;26;1;AP;16;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+46,12;20;1;BA;29;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+60,07;10;2;CE;23;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+65;5;3;DF;53;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+58,97;12;2;ES;32;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+65,18;4;3;GO;52;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+31,11;22;1;MA;21;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+61,56;9;3;MG;31;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+62;8;3;MS;50;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+60,04;11;2;MT;51;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+27,29;23;1;PA;15;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+51,71;16;2;PB;25;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+52,21;15;2;PE;26;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+42,7;21;1;PI;22;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+70,5;1;3;PR;41;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+62,52;7;3;RJ;33;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+55,27;14;2;RN;24;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+56,22;13;2;RO;11;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+21,97;24;1;RR;14;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+68,26;3;3;RS;43;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+63,44;6;3;SC;42;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+50,18;17;2;SE;28;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+68,76;2;3;SP;35;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+47,41;19;1;TO;17;dim_bem_estar_social_e_cidadania;BEM-ESTAR SOCIAL E CIDADANIA
+22,59;25;1;AC;12;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+42,73;20;1;AL;27;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+17,45;27;1;AM;13;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+25,37;24;1;AP;16;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+54,92;11;2;BA;29;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+46,3;18;2;CE;23;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+66,84;6;3;DF;53;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+56,72;9;3;ES;32;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+49,48;15;2;GO;52;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+42,56;21;1;MA;21;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+70,43;5;3;MG;31;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+45,58;19;1;MS;50;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+48,8;16;2;MT;51;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+38,41;22;1;PA;15;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+51,88;12;2;PB;25;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+50,03;14;2;PE;26;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+51,18;13;2;PI;22;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+71,7;3;3;PR;41;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+75,12;2;3;RJ;33;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+66,08;7;3;RN;24;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+46,86;17;2;RO;11;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+19,04;26;1;RR;14;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+63,7;8;3;RS;43;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+71,34;4;3;SC;42;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+55,9;10;2;SE;28;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+78,31;1;3;SP;35;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+33,72;23;1;TO;17;dim_energia_e_conectividade;ENERGIA E CONECTIVIDADE
+46,01;15;2;AC;12;dim_mobilidade;MOBILIDADE
+52,96;8;3;AL;27;dim_mobilidade;MOBILIDADE
+36,45;25;1;AM;13;dim_mobilidade;MOBILIDADE
+33,83;27;1;AP;16;dim_mobilidade;MOBILIDADE
+45,89;16;2;BA;29;dim_mobilidade;MOBILIDADE
+58,81;4;3;CE;23;dim_mobilidade;MOBILIDADE
+75,85;1;3;DF;53;dim_mobilidade;MOBILIDADE
+54,07;7;3;ES;32;dim_mobilidade;MOBILIDADE
+43,28;20;1;GO;52;dim_mobilidade;MOBILIDADE
+45,82;17;2;MA;21;dim_mobilidade;MOBILIDADE
+51,14;10;2;MG;31;dim_mobilidade;MOBILIDADE
+48,41;13;2;MS;50;dim_mobilidade;MOBILIDADE
+36,61;24;1;MT;51;dim_mobilidade;MOBILIDADE
+45,51;18;2;PA;15;dim_mobilidade;MOBILIDADE
+52,25;9;3;PB;25;dim_mobilidade;MOBILIDADE
+55,77;5;3;PE;26;dim_mobilidade;MOBILIDADE
+41,11;21;1;PI;22;dim_mobilidade;MOBILIDADE
+49,3;11;2;PR;41;dim_mobilidade;MOBILIDADE
+70,26;2;3;RJ;33;dim_mobilidade;MOBILIDADE
+47,54;14;2;RN;24;dim_mobilidade;MOBILIDADE
+40,33;22;1;RO;11;dim_mobilidade;MOBILIDADE
+44,45;19;1;RR;14;dim_mobilidade;MOBILIDADE
+35,26;26;1;RS;43;dim_mobilidade;MOBILIDADE
+48,92;12;2;SC;42;dim_mobilidade;MOBILIDADE
+55,27;6;3;SE;28;dim_mobilidade;MOBILIDADE
+66,43;3;3;SP;35;dim_mobilidade;MOBILIDADE
+37,9;23;1;TO;17;dim_mobilidade;MOBILIDADE

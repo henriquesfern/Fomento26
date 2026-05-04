@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Building2, CircleDollarSign } from 'lucide-react';
 import { appData } from '../data/parser';
+import { infraData } from '../data/infraBR_parser';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, Tooltip, PieChart, Pie, AreaChart, Area, Legend } from 'recharts';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 import { scaleLinear } from 'd3-scale';
@@ -42,7 +43,7 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
   const selecionados = data;
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [selectedCategoria, setSelectedCategoria] = useState<string | null>(null);
-  const [mapTooltip, setMapTooltip] = useState<{content: string, rank?: string, sub: string, sub2?: string, sub3?: string, fom?: string, pat?: string, stateProp?: string, regionProp?: string, x: number, y: number} | null>(null);
+  const [mapTooltip, setMapTooltip] = useState<{content: string, rankRepasse?: string, rankInfraBR?: string, sub: string, sub2?: string, sub3?: string, fom?: string, pat?: string, stateProp?: string, regionProp?: string, x: number, y: number} | null>(null);
   const [geoData, setGeoData] = useState<any>(null);
 
   React.useEffect(() => {
@@ -356,7 +357,7 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                     const formattedPatrocinio = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(breakdown.patrocinio);
                     
                     const rankIndex = sortedStateData.findIndex(s => s[0] === stateName) + 1;
-                    const stateRank = rankIndex > 0 ? `(${rankIndex}º)` : '';
+                    const infraState = infraData.infraEstados.find(s => s.sigla_uf === ufSigla);
                     
                     const stateProp = totalGlobalRepasse > 0 ? ((stateVal / totalGlobalRepasse) * 100).toFixed(1) + '%' : '0%';
                     const regionProp = totalGlobalRepasse > 0 ? ((regionVal / totalGlobalRepasse) * 100).toFixed(1) + '%' : '0%';
@@ -405,12 +406,13 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                           onMouseEnter={(e) => {
                             setMapTooltip({
                               content: `${stateName} (${ufSigla})`, 
-                              rank: stateRank,
+                              rankRepasse: rankIndex > 0 ? `${rankIndex}º` : undefined,
+                              rankInfraBR: infraState ? `${infraState.rank}º` : undefined,
                               sub: showEntityCount ? `Estado: ${formattedStateSum}` : `Repasse no Estado: ${formattedStateSum}`,
                               sub2: showEntityCount ? `Região: ${formattedRegionSum}` : `Região ${regionName}: ${formattedRegionSum}`, 
-                              sub3: showEntityCount ? `Total de Entidades: ${entidadesSize}` : undefined,
-                              fom: showEntityCount ? formattedFomento : undefined,
-                              pat: showEntityCount ? formattedPatrocinio : undefined,
+                              sub3: (showEntityCount || theme === 'overview') ? `Total de Entidades: ${entidadesSize}` : undefined,
+                              fom: (showEntityCount || theme === 'overview') ? formattedFomento : undefined,
+                              pat: (showEntityCount || theme === 'overview') ? formattedPatrocinio : undefined,
                               stateProp,
                               regionProp,
                               x: e.clientX, 
@@ -454,13 +456,24 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                 className="fixed z-50 bg-slate-900 border border-slate-700 text-white p-4 rounded shadow-xl pointer-events-none min-w-[200px]"
                 style={{ top: mapTooltip.y + 15, left: mapTooltip.x + 15, opacity: 0.95 }}
               >
-                <div className="font-bold text-base mb-2 border-b border-slate-700 pb-1 flex justify-between items-center gap-4">
+                <div className="font-bold text-base mb-2 border-b border-slate-700 pb-1">
                   <span>{mapTooltip.content}</span>
-                  {mapTooltip.rank && <span className="text-[#F19D26] font-medium text-sm">{mapTooltip.rank}</span>}
                 </div>
                 {theme === 'history' && showEntityCount ? (
                   <div className="flex flex-col gap-1 text-sm">
-                    <div className="flex justify-between gap-4">
+                    {mapTooltip.rankRepasse && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-400 font-medium">Posição em Repasse:</span>
+                        <span className="text-[#F19D26] font-medium">{mapTooltip.rankRepasse}</span>
+                      </div>
+                    )}
+                    {mapTooltip.rankInfraBR && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-400 font-medium">Posição do Infra-BR:</span>
+                        <span className="text-[#F19D26] font-medium">{mapTooltip.rankInfraBR}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between gap-4 mt-1 pt-1 border-t border-slate-700/50">
                       <span className="text-slate-400 font-medium">Estado:</span> 
                       <span className="font-semibold text-white">
                         {mapTooltip.sub.replace('Estado: ', '')}
@@ -495,7 +508,19 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                   </div>
                 ) : (
                   <div className="flex flex-col gap-1 text-sm">
-                    <div className="flex justify-between gap-4">
+                    {mapTooltip.rankRepasse && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-400 font-medium">Posição em Repasse:</span>
+                        <span className="text-[#F19D26] font-medium">{mapTooltip.rankRepasse}</span>
+                      </div>
+                    )}
+                    {mapTooltip.rankInfraBR && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-400 font-medium">Posição do Infra-BR:</span>
+                        <span className="text-[#F19D26] font-medium">{mapTooltip.rankInfraBR}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between gap-4 mt-1 pt-1 border-t border-slate-700/50">
                       <span className="text-slate-400 font-medium">Estado:</span> 
                       <span className="font-semibold text-white">
                         {mapTooltip.sub.replace('Repasse no Estado: ', '')}
@@ -509,6 +534,24 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                         {mapTooltip.regionProp && <span className="text-slate-400 text-xs ml-1 font-normal">({mapTooltip.regionProp})</span>}
                       </span>
                     </div>
+                    {mapTooltip.sub3 && (
+                      <div className="flex justify-between gap-4 mt-1">
+                        <span className="text-slate-400 font-medium">Total de Entidades:</span> 
+                        <span className="font-medium text-indigo-400">{mapTooltip.sub3.replace('Total de Entidades: ', '')}</span>
+                      </div>
+                    )}
+                    {mapTooltip.fom && (
+                      <div className="flex justify-between gap-4 border-t border-slate-700/50 mt-1 pt-1">
+                        <span className="text-slate-400 font-medium">Fomento:</span> 
+                        <span className="font-medium text-emerald-400">{mapTooltip.fom}</span>
+                      </div>
+                    )}
+                    {mapTooltip.pat && (
+                      <div className="flex justify-between gap-4">
+                        <span className="text-slate-400 font-medium">Patrocínio:</span> 
+                        <span className="font-medium text-amber-400">{mapTooltip.pat}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

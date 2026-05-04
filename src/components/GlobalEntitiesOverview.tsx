@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps
 import { geoMercator, geoCentroid } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import { appData } from '../data/parser';
+import { infraData } from '../data/infraBR_parser';
 
 const geoUrl = "https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/brazil-states.geojson";
 
@@ -18,10 +19,15 @@ export function GlobalEntitiesOverview() {
   const [geoData, setGeoData] = useState<any>(null);
   const [tooltip, setTooltip] = useState<{
     content: string;
-    total: string;
-    fomento: string;
-    patrocinio: string;
-    entidades: number;
+    rankRepasse?: string;
+    rankInfraBR?: string;
+    sub: string;
+    sub2?: string;
+    sub3?: string;
+    fom?: string;
+    pat?: string;
+    stateProp?: string;
+    regionProp?: string;
     x: number;
     y: number;
   } | null>(null);
@@ -61,6 +67,24 @@ export function GlobalEntitiesOverview() {
     return map;
   }, []);
 
+  const sortedStateData = useMemo(() => {
+    return Array.from(aggregatedData.entries()).sort((a,b) => b[1].TOTAL - a[1].TOTAL);
+  }, [aggregatedData]);
+
+  const totalGlobalRepasse = useMemo(() => {
+    return Array.from(aggregatedData.values()).reduce((sum, val) => sum + val.TOTAL, 0);
+  }, [aggregatedData]);
+
+  const regionData = useMemo(() => {
+    const allData = [...appData.fomentoHistorico, ...appData.patrocinioHistorico, ...appData.fomento2026];
+    const map = new Map<string, number>();
+    allData.forEach(item => {
+      const region = item.REGIÃO || 'Indefinida';
+      map.set(region, (map.get(region) || 0) + item.VALOR_REPASSE);
+    });
+    return Array.from(map.entries()).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value);
+  }, []);
+
   const maxTotal = useMemo(() => Math.max(...Array.from(aggregatedData.values()).map(d => d.TOTAL), 1), [aggregatedData]);
 
   const colorScaleTotal = scaleLinear<string>().domain([0, maxTotal]).range(["#E0E3E8", "#0A3864"]);
@@ -94,8 +118,22 @@ export function GlobalEntitiesOverview() {
                 geographies.map(geo => {
                   const ufSigla = geo.properties.sigla;
                   const stateName = geo.properties.name;
+                  const regionName = UF_TO_REGION[ufSigla];
                   const stateData = aggregatedData.get(stateName);
                   const val = stateData ? stateData.TOTAL : 0;
+                  
+                  const regionVal = regionData.find(d => d.name === regionName)?.value || 0;
+                  const formattedRegionSum = formatCurrency(regionVal);
+                  const formattedStateSum = formatCurrency(val);
+                  const formattedFomento = formatCurrency(stateData?.FOMENTO || 0);
+                  const formattedPatrocinio = formatCurrency(stateData?.PATROCINIO || 0);
+                  const entidadesSize = stateData?.ENTIDADES?.size || 0;
+                  
+                  const rankIndex = sortedStateData.findIndex(s => s[0] === stateName) + 1;
+                  const infraState = infraData.infraEstados.find(s => s.sigla_uf === ufSigla);
+                  
+                  const stateProp = totalGlobalRepasse > 0 ? ((val / totalGlobalRepasse) * 100).toFixed(1) + '%' : '0%';
+                  const regionProp = totalGlobalRepasse > 0 ? ((regionVal / totalGlobalRepasse) * 100).toFixed(1) + '%' : '0%';
 
                   return (
                     <Geography
@@ -112,10 +150,15 @@ export function GlobalEntitiesOverview() {
                       onMouseEnter={(e) => {
                         setTooltip({
                           content: `${stateName} (${ufSigla})`, 
-                          total: formatCurrency(stateData?.TOTAL || 0),
-                          fomento: formatCurrency(stateData?.FOMENTO || 0),
-                          patrocinio: formatCurrency(stateData?.PATROCINIO || 0),
-                          entidades: stateData?.ENTIDADES?.size || 0,
+                          rankRepasse: rankIndex > 0 ? `${rankIndex}º` : undefined,
+                          rankInfraBR: infraState ? `${infraState.rank}º` : undefined,
+                          sub: `Estado: ${formattedStateSum}`,
+                          sub2: `Região ${regionName}: ${formattedRegionSum}`,
+                          sub3: `Total de Entidades: ${entidadesSize}`,
+                          fom: formattedFomento,
+                          pat: formattedPatrocinio,
+                          stateProp,
+                          regionProp,
                           x: e.clientX, 
                           y: e.clientY
                         });
@@ -180,32 +223,61 @@ export function GlobalEntitiesOverview() {
 
       {tooltip && (
         <div 
-          className="fixed z-50 bg-slate-900 border border-slate-700 text-white p-4 rounded shadow-xl pointer-events-none"
+          className="fixed z-50 bg-slate-900 border border-slate-700 text-white p-4 rounded shadow-xl pointer-events-none min-w-[200px]"
           style={{ 
             left: tooltip.x + 15, 
             top: tooltip.y + 15,
-            transform: 'translate(0, 0)',
             opacity: 0.95
           }}
         >
-          <p className="font-bold text-base mb-2 border-b border-slate-700 pb-1">{tooltip.content}</p>
+          <div className="font-bold text-base mb-2 border-b border-slate-700 pb-1 flex justify-between items-center gap-4">
+            <span>{tooltip.content}</span>
+          </div>
           <div className="flex flex-col gap-1 text-sm">
-            <div className="flex justify-between gap-4">
-              <span className="text-slate-400">Repasse Total:</span>
-              <span className="font-semibold text-white">{tooltip.total}</span>
+            {tooltip.rankRepasse && (
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-400 font-medium">Posição em Repasse:</span>
+                <span className="text-[#F19D26] font-medium">{tooltip.rankRepasse}</span>
+              </div>
+            )}
+            {tooltip.rankInfraBR && (
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-400 font-medium">Posição do Infra-BR:</span>
+                <span className="text-[#F19D26] font-medium">{tooltip.rankInfraBR}</span>
+              </div>
+            )}
+            <div className="flex justify-between gap-4 mt-1 pt-1 border-t border-slate-700/50">
+              <span className="text-slate-400 font-medium">Estado:</span> 
+              <span className="font-semibold text-white">
+                {tooltip.sub.replace('Estado: ', '')}
+                {tooltip.stateProp && <span className="text-slate-400 text-xs ml-1 font-normal">({tooltip.stateProp})</span>}
+              </span>
             </div>
             <div className="flex justify-between gap-4 mt-1">
-              <span className="text-slate-400">Entidades Atendidas:</span>
-              <span className="font-semibold text-indigo-400">{tooltip.entidades}</span>
+              <span className="text-slate-400 font-medium">Região:</span> 
+              <span className="font-semibold text-white">
+                {tooltip.sub2?.split(': ')[1]}
+                {tooltip.regionProp && <span className="text-slate-400 text-xs ml-1 font-normal">({tooltip.regionProp})</span>}
+              </span>
             </div>
-            <div className="flex justify-between gap-4 border-t border-slate-700/50 mt-1 pt-1">
-              <span className="text-slate-400">Fomento:</span>
-              <span className="font-medium text-emerald-400">{tooltip.fomento}</span>
-            </div>
-            <div className="flex justify-between gap-4">
-              <span className="text-slate-400">Patrocínio:</span>
-              <span className="font-medium text-amber-400">{tooltip.patrocinio}</span>
-            </div>
+            {tooltip.sub3 && (
+              <div className="flex justify-between gap-4 mt-1">
+                <span className="text-slate-400 font-medium">Total de Entidades:</span> 
+                <span className="font-medium text-indigo-400">{tooltip.sub3.replace('Total de Entidades: ', '')}</span>
+              </div>
+            )}
+            {tooltip.fom && (
+              <div className="flex justify-between gap-4 border-t border-slate-700/50 mt-1 pt-1">
+                <span className="text-slate-400 font-medium">Fomento:</span> 
+                <span className="font-medium text-emerald-400">{tooltip.fom}</span>
+              </div>
+            )}
+            {tooltip.pat && (
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-400 font-medium">Patrocínio:</span> 
+                <span className="font-medium text-amber-400">{tooltip.pat}</span>
+              </div>
+            )}
           </div>
         </div>
       )}

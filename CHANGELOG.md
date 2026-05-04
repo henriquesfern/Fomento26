@@ -1,5 +1,36 @@
 # Changelog
 
+## [2.2.2] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Aprimoramento do Tooltip Geográfico (Repasse Total Histórico):**
+  - Aplicada a mesma estrutura detalhada do *tooltip* (incluindo posição de repasse, posição Infra-BR, estado, região, entidades, fomento e patrocínio) e formatação de cores desenvolvida para as abas correntes no mapa "Repasse Total Histórico" da aba "Histórico - Entidades (2025)".
+
+## [2.2.1] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Aprimoramento do Tooltip Geográfico (Visão Geral Corrente):**
+  - Ajustado o *tooltip* do mapa da aba "Visão Geral Corrente" para exibir os dados de total de entidades atendidas, fomento e patrocínio, padronizando sua apresentação e incorporando as cores pré-definidas.
+
+## [2.2.0] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Aprimoramento do Tooltip Geográfico (Visão Geral Corrente e Histórico):**
+  - **Ranking de Repasse:** Adicionado o destaque da posição exata do estado em relação ao volume de repasse.
+  - **Ranking Infra-BR:** Incorporado de forma complementar no painel a exibição simultânea da respectiva posição do estado de acordo com o índice de infraestrutura nacional (Infra-BR).
+  - Estruturação em linhas distintas e organizadas dentro do *tooltip*, ampliando a clareza e análise rápida para o gestor.
+
+## [2.1.0] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Aba EC Geral:** Aperfeiçoamento da seção destinada à listagem e consulta avançada do Diretório de Entidades de Classe globais.
+- **Identificação Visual de Repasses:** Inclusão de uma nova coluna estrutural que aponta visivelmente, através de ícones estelares em cores padronizadas, se a entidade de classe assinalada foi apoiada integralmente por recursos advindos de Fomento, Patrocínio, ou de Ambos, em todos os seus registros históricos.
+- **Filtro Direcionado de Repasses:** Adoção de uma nova estrutura analítica de filtros de Repasse nas listagens de EC Geral que suporta recortes exatos pelas tags de apoio: Todos, Fomento, Patrocínio, Ambos e Nenhum.
+- **Cards Analíticos Dinâmicos:** Consolidação de três novos cartões estruturados posicionados no topo da visualização da aba da EC Geral; O primeiro reportando o total inalterável da malha global, enquanto os outros dois respondem individualmente aos filtros aplicados, mostrando com clareza matemática a densidade bruta da filtragem e o enquadramento percentual de repasses frente ao todo.
+
+### Corrigido
+- **Padronização Inter-relacional de Nomenclaturas:** Múltiplas correções artesanais e manuais de identificação executadas no corpo de banco de dados nativo (\`ECGeral.ts\`) mitigando disparidades textuais ou grafias irregulares entre a matriz base e suas dependências regionais operantes, sobretudo em unidades contendo a palavra-chave "ABENC" alocadas em variados estados atuantes no cadastro.
+
 ## [2.0.0] - 2026-04-30
 
 ### Adicionado / Melhorado

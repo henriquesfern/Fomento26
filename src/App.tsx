@@ -13,6 +13,8 @@ import { FiscalView } from './components/FiscalView';
 import { InsightsView } from './components/InsightsView';
 import { StateForceView } from './components/StateForceView';
 import { AIAssistant } from './components/AIAssistant';
+import { InsightsECGeral } from './components/InsightsECGeral';
+import { DirectoryECGeral } from './components/DirectoryECGeral';
 import { appData } from './data/parser';
 
 // Helper for tailwind classes
@@ -48,8 +50,10 @@ type TabId =
   | 'history_patrocinio_fin'
   | 'history_entidades'
   | 'history_entidades_dir'
+  | 'history_ec_geral'
   | 'insights'
   | 'insights_forca'
+  | 'insights_ec'
   | 'ai_assistant';
 
 export default function App() {
@@ -87,8 +91,10 @@ export default function App() {
       case 'history_patrocinio_fin': return 'Painel Financeiro (Patrocínio - 2025)';
       case 'history_entidades': return 'Histórico - Entidades (2025)';
       case 'history_entidades_dir': return 'Diretório de Entidades (Histórico - 2025)';
+      case 'history_ec_geral': return 'EC Geral';
       case 'insights': return 'Insights e Análises';
       case 'insights_forca': return 'Força por Estado';
+      case 'insights_ec': return 'Visão EC Geral';
       case 'ai_assistant': return 'IA - Consulta de Dados';
     }
   };
@@ -128,11 +134,13 @@ export default function App() {
           
           {renderMenuItem('history_entidades', 'Entidades (2025)', Users, 1)}
           {renderMenuItem('history_entidades_dir', 'Diretório de Entidades', List, 2)}
+          {renderMenuItem('history_ec_geral', 'EC Geral', List, 2)}
           
           <div className="my-2 border-t border-white/10 mx-2"></div>
           
           {renderMenuItem('insights', 'Insights e Análises', Lightbulb, 0)}
           {renderMenuItem('insights_forca', 'Força por Estado', LayoutDashboard, 1)}
+          {renderMenuItem('insights_ec', 'Visão EC Geral', LayoutDashboard, 1)}
 
           <div className="my-2 border-t border-white/10 mx-2"></div>
           
@@ -169,11 +177,13 @@ export default function App() {
             
             {activeTab === 'history_entidades' && <GlobalEntitiesOverview />}
             {activeTab === 'history_entidades_dir' && <GlobalDirectory />}
+            {activeTab === 'history_ec_geral' && <DirectoryECGeral />}
 
             {activeTab === 'history' && <Overview data={[...appData.fomentoHistorico, ...appData.patrocinioHistorico]} theme="history" showEntityCount={true} />}
             
             {activeTab === 'insights' && <InsightsView />}
             {activeTab === 'insights_forca' && <StateForceView />}
+            {activeTab === 'insights_ec' && <InsightsECGeral />}
             {activeTab === 'ai_assistant' && <AIAssistant />}
           </div>
         </div>
