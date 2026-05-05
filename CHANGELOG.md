@@ -1,5 +1,77 @@
 # Changelog
 
+## [2.6.0] - 2026-05-05
+
+### Preparações
+- Versão e documento de log atualizados em preparação para novos ajustes e evoluções na interface e nos dados do aplicativo.
+
+## [2.5.3] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Aperfeiçoamento do Tooltip no Mapa Coroplético (Alinhamento e Bordas):**
+  - O tooltip do mapa na aba de Avaliação Infra-BR foi alinhado à esquerda para melhorar a comparabilidade visual.
+  - Removidos os contornos em formato de botão das pílulas para uma leitura contínua, usando separadores discretos, padronizando visualmente com o componente "Investimento por Estado".
+
+## [2.5.2] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Aperfeiçoamento do Tooltip no Mapa Coroplético (Fundo Escuro):**
+  - O tooltip do mapa na aba de Avaliação Infra-BR foi revertido para o padrão de fundo escuro, garantindo consistência com os outros painéis do aplicativo.
+  - As pílulas descritivas ("Fomento (Atual/2026)", etc.) foram mantidas com suas cores distintas para facilitar a identificação visual rápida, enquanto o texto foi ajustado para leitura no modo escuro.
+
+## [2.5.1] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Aperfeiçoamento do Tooltip no Mapa Coroplético:**
+  - O tooltip do mapa na aba de Avaliação Infra-BR agora adota padrão claro para melhor visibilidade com cores institucionais do CONFEA.
+  - Implementada a divisão mais detalhada dos repasses distinguindo os montantes de "Fomento (Atual/2026)", "Fomento (Histórico/2025)" e "Patrocínio (Histórico/2025)", espelhando as pílulas com as cores primárias já definidas em outras áreas do app.
+
+## [2.5.0] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Novo Mapa Coroplético (Infra-BR):**
+  - Implementado gráfico de mapa do Brasil exibindo a distribuição geográfica da **Nota Infra-BR**, com a intensidade da cor diretamente associada à nota do estado.
+  - O mapa serve como um selecionador interativo: ao clicar no estado correspondente, todos os indicadores e componentes da tela passarão a se referenciar a este estado.
+  - Inserção de tooltip customizado contendo valores de **Nota**, **Rank Infra-BR**, **Total Repassado**, e subdivisões por **Fomento** e **Patrocínio**.
+
+## [2.4.2] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Nova Matriz de Quadrantes (Infra-BR x Repasse Financeiro):**
+  - Criação de um novo gráfico de dispersão com linhas de referência indicando a média nacional de cada eixo (Nota Infra-BR e Volume de Repasse).
+  - O gráfico permite a divisão clara dos estados em quadrantes para diagnóstico rápido (exemplo: "Alto Repasse / Alta Infra" vs "Baixo Repasse / Baixa Infra").
+  - O gráfico de dimensões original (tamanho da bolha) foi mantido ao lado para rápida comparação.
+
+## [2.4.1] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Aperfeiçoamento do Gráfico de Dispersão (Avaliação Infra-BR):**
+  - Implementada a variação dinâmica de tamanho dos círculos. O raio de cada ponto agora reflete o binômio do volume de repasses financeiro e respectiva posição no ranking Infra-BR (estados com elevado volume de repasse e ótima infraestrutura recebem maior destaque visual).
+
+## [2.4.0] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Nova aba "Avaliação Infra-BR":** 
+  - Gráfico de dispersão relacionando a **Nota Infra-BR** com o **Volume Total de Repasse** por Unidade Federativa.
+  - Gráfico em radar (Radar Chart) indicando a comparação das **dimensões** de cada estado em contraste com a **Média Nacional**.
+  - Detalhamento progressivo através da seleção de estado constando os **Componentes e Indicadores** das dimensões de mobilidade, energia, água, etc.
+
+## [2.3.1] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Tabela EC Geral - Indicadores Visuais de CNPJ e Vínculo:**
+  - Aplicação de cores dinâmicas aos CNPJs identificados para exibir de maneira clara a qual projeto base (Fomento 2025, Fomento 2026, Patrocínio 2025, CDEN ou Precursoras) ele pertence.
+  - O formato apresentado permite cruzar imediatamente entidades que possuem mais de um CNPJ diferente no cruzamento das bases (Divergência de CNPJ).
+
+## [2.3.0] - 2026-05-04
+
+### Adicionado / Melhorado
+- **Tabela EC Geral Aprimorada:**
+  - Inclusão e validação cruzada dos dados de todos os editais disponíveis (Fomento 2025/2026, Patrocínio, CDEN e Precursoras).
+  - Novas colunas exibidas: CNPJ, status de entidade do CDEN e status de entidade Precursora, alimentadas a partir do cruzamento dos dados.
+  - Inclusão da coluna de "Observações" visando evidenciar inconsistências cadastrais, como duplicidade de entidades no próprio EC Geral, ou divergência do CNPJ entre os demais arquivos.
+  - Filtros criados para permitir a rápida navegação entre entidades CDEN e Precursoras no Diretório de Entidades do EC Geral.
+
 ## [2.2.2] - 2026-05-04
 
 ### Adicionado / Melhorado

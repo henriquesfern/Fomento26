@@ -15,6 +15,7 @@ import { StateForceView } from './components/StateForceView';
 import { AIAssistant } from './components/AIAssistant';
 import { InsightsECGeral } from './components/InsightsECGeral';
 import { DirectoryECGeral } from './components/DirectoryECGeral';
+import { InfraBRInsights } from './components/InfraBRInsights';
 import { appData } from './data/parser';
 
 // Helper for tailwind classes
@@ -95,6 +96,7 @@ export default function App() {
       case 'insights': return 'Insights e Análises';
       case 'insights_forca': return 'Força por Estado';
       case 'insights_ec': return 'Visão EC Geral';
+      case 'insights_infra': return 'Avaliação Infra-BR';
       case 'ai_assistant': return 'IA - Consulta de Dados';
     }
   };
@@ -141,6 +143,7 @@ export default function App() {
           {renderMenuItem('insights', 'Insights e Análises', Lightbulb, 0)}
           {renderMenuItem('insights_forca', 'Força por Estado', LayoutDashboard, 1)}
           {renderMenuItem('insights_ec', 'Visão EC Geral', LayoutDashboard, 1)}
+          {renderMenuItem('insights_infra', 'Avaliação Infra-BR', LayoutDashboard, 1)}
 
           <div className="my-2 border-t border-white/10 mx-2"></div>
           
@@ -184,6 +187,7 @@ export default function App() {
             {activeTab === 'insights' && <InsightsView />}
             {activeTab === 'insights_forca' && <StateForceView />}
             {activeTab === 'insights_ec' && <InsightsECGeral />}
+            {activeTab === 'insights_infra' && <InfraBRInsights />}
             {activeTab === 'ai_assistant' && <AIAssistant />}
           </div>
         </div>
