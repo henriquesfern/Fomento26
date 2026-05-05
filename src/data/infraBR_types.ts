@@ -50,4 +50,17 @@ export interface InfraDimensao {
   dimension_name: string;
 }
 
+export interface InfraDetalhamento {
+  DIMENSAO: string;
+  COMPONENTE: string;
+  INDICADOR: string;
+  ID: string;
+  INDICADOR_NEGATIVADO: string;
+  ANO: string;
+  FONTE: string;
+  DESCRICAO: string;
+  UNIDADE: string;
+  INTERPRETACAO: string;
+}
+
 // Funções de parsing serão feitas aqui para ler os arquivos CSV!

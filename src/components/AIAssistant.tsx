@@ -6,6 +6,7 @@ import rehypeKatex from 'rehype-katex';
 import Markdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import { appData } from '../data/parser';
+import { infraData } from '../data/infraBR_parser';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function ChartRenderer({ node, className, children, ...props }: any) {
@@ -116,7 +117,16 @@ export function AIAssistant() {
       const contextData = {
         fomento2025: appData.fomentoHistorico.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Objetivo: d.OBJETIVO })),
         fomento2026: appData.fomento2026.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Objetivo: d.OBJETIVO })),
-        patrocinio2025: appData.patrocinioHistorico.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Projeto: d.OBJETIVO }))
+        patrocinio2025: appData.patrocinioHistorico.map(d => ({ Entidade: d.ENTIDADE, UF: d.ESTADO, Repasse: d.VALOR_REPASSE, Projeto: d.OBJETIVO })),
+        infraBR_detalhamento: infraData.detalhamento.map(d => ({
+          Dimensao: d.DIMENSAO,
+          Componente: d.COMPONENTE,
+          Indicador: d.INDICADOR,
+          Interpretacao: d.INTERPRETACAO,
+          Descricao: d.DESCRICAO
+        })),
+        infraBR_dimensoes: infraData.dimensoes.map(d => ({ UF: d.sigla_uf, Dimensao: d.dimension_name, Valor: d.value })),
+        infraBR_estados: infraData.infraEstados.map(d => ({ UF: d.sigla_uf, Nota: d.infra_br, Rank: d.rank }))
       };
 
       const res = await fetch('/api/chat', {
@@ -155,7 +165,7 @@ export function AIAssistant() {
         </div>
         <div>
           <h2 className="text-xl font-bold text-slate-800">Assistente de IA</h2>
-          <p className="text-sm text-slate-500">Consulta inteligente aos dados de fomento e patrocínio</p>
+          <p className="text-sm text-slate-500">Consulta inteligente aos dados de fomento, patrocínio e Infra-BR</p>
         </div>
       </div>
 
@@ -163,7 +173,7 @@ export function AIAssistant() {
       <div className="bg-indigo-50 border-b border-indigo-100 p-4 shrink-0 flex items-start gap-3">
         <AlertCircle size={20} className="text-indigo-600 shrink-0 mt-0.5" />
         <p className="text-sm text-indigo-800 leading-relaxed">
-          <strong>Aviso:</strong> Este assistente responde exclusivamente baseando-se nos projetos de fomento e patrocínio armazenados neste app. 
+          <strong>Aviso:</strong> Este assistente responde exclusivamente baseando-se nos projetos de fomento, patrocínio e na avaliação do Infra-BR armazenados neste app. 
           Respondendo a regras de conduta, a IA foi instruída a não abordar outros assuntos ou solicitações alheias à base de dados.
         </p>
       </div>
@@ -179,7 +189,7 @@ export function AIAssistant() {
             <h3 className="text-lg font-medium text-slate-700 mb-2">Como posso ajudar?</h3>
             <p className="text-slate-500 text-sm">
               Você pode pedir relatórios específicos, comparações entre estados, 
-              entidades que mais receberam verba, ou resumos dos projetos.
+              entidades que mais receberam verba, ou detalhamentos e componentes dos indicadores do Infra-BR.
             </p>
           </div>
         )}
@@ -243,7 +253,7 @@ export function AIAssistant() {
                 handleSubmit(e);
               }
             }}
-            placeholder="Pergunte sobre os projetos de fomento e patrocínio (Ex: Qual estado recebeu mais verba em 2026?)..."
+            placeholder="Pergunte sobre fomento, patrocínio e Infra-BR (Ex: Qual o detalhamento e as notas do indicador de mobilidade?)..."
             className="flex-1 resize-none h-14 bg-slate-100 border-transparent rounded-xl px-4 py-4 pr-14 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all text-sm outline-none"
             disabled={loading}
           />

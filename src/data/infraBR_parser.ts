@@ -4,7 +4,8 @@ import {
   InfraMediaBR,
   InfraIndicador,
   InfraComponente,
-  InfraDimensao
+  InfraDimensao,
+  InfraDetalhamento
 } from './infraBR_types';
 
 import infraBRCsv from './infra-br.csv?raw';
@@ -12,6 +13,7 @@ import mediasBRCsv from './medias_BR.csv?raw';
 import dimensoesCsv from './dimensoes_0100.csv?raw';
 import componentesCsv from './componentes_0100.csv?raw';
 import indicadoresCsv from './indicadores_0100.csv?raw';
+import detalhamentoCsv from './detalhamentoindicadores.csv?raw';
 
 // Utility to parse brazilian numbers (e.g. "11,43")
 const parseNumberBR = (val: string) => {
@@ -27,6 +29,7 @@ export const parseInfraBRData = () => {
   const dimensoes_raw = Papa.parse<any>(dimensoesCsv.trim(), parseConfig).data;
   const componentes_raw = Papa.parse<any>(componentesCsv.trim(), parseConfig).data;
   const indicadores_raw = Papa.parse<any>(indicadoresCsv.trim(), parseConfig).data;
+  const detalhamento_raw = Papa.parse<any>(detalhamentoCsv.trim(), { header: true, skipEmptyLines: true, delimiter: ';' }).data;
 
   const infraEstados: InfraState[] = infra_br_raw
     .filter((row: any) => row.sigla_uf)
@@ -90,12 +93,26 @@ export const parseInfraBRData = () => {
       fonte: row.fonte || ''
     }));
 
+  const detalhamento: InfraDetalhamento[] = detalhamento_raw.map((row: any) => ({
+    DIMENSAO: row['DIMENSÃO'] || '',
+    COMPONENTE: row['COMPONENTE'] || '',
+    INDICADOR: row['INDICADOR'] || '',
+    ID: row['ID'] || '',
+    INDICADOR_NEGATIVADO: row['INDICADOR NEGATIVADO'] || '',
+    ANO: row['ANO'] || '',
+    FONTE: row['FONTE'] || '',
+    DESCRICAO: row['DESCRIÇÃO / CÁLCULO'] || '',
+    UNIDADE: row['UNIDADE'] || '',
+    INTERPRETACAO: row['INTERPRETAÇÃO'] || ''
+  }));
+
   return {
     infraEstados,
     mediasBR,
     dimensoes,
     componentes,
-    indicadores
+    indicadores,
+    detalhamento
   };
 };
 

@@ -55,6 +55,7 @@ type TabId =
   | 'insights'
   | 'insights_forca'
   | 'insights_ec'
+  | 'insights_infra'
   | 'ai_assistant';
 
 export default function App() {
