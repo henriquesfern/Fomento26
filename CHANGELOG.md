@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.7.0] - 2026-05-05
+
+### Adicionado / Melhorado
+- **Aperfeiçoamento do Repasse Drill-down (Infra-BR):**
+  - Implementado o detalhamento em três níveis de profundidade no card de desempenho do Infra-BR: **Dimensões > Componentes > Indicadores**.
+  - **Tooltips Contextuais:** Integrados os novos tooltips em pop-up utilizando a biblioteca Radix UI para otimizar o espaço e apresentar dados secundários de forma interativa.
+  - O painel iterativo dos indicadores agora exibe diretamente na tela as descrições/cálculos, unidade de medida e a interpretação correspondente de cada indicador.
+
 ## [2.6.0] - 2026-05-05
 
 ### Preparações

@@ -1,7 +1,7 @@
 {
   "name": "react-example",
   "private": true,
-  "version": "2.6.0",
+  "version": "2.7.0",
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.50.1",
+    "@radix-ui/react-tooltip": "^1.2.8",
     "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "^4.1.14",
     "@types/d3-geo": "^3.1.0",

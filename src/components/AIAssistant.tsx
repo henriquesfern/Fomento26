@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, AlertCircle, Sparkles } from 'lucide-react';
+import { Send, Bot, AlertCircle, Sparkles, Trash2 } from 'lucide-react';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -93,9 +93,28 @@ function ChartRenderer({ node, className, children, ...props }: any) {
 
 export function AIAssistant() {
   const [query, setQuery] = useState('');
-  const [messages, setMessages] = useState<{role: 'user'|'model', text: string}[]>([]);
+  const [messages, setMessages] = useState<{role: 'user'|'model', text: string}[]>(() => {
+    const saved = sessionStorage.getItem('ai_chat_history');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  });
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    sessionStorage.setItem('ai_chat_history', JSON.stringify(messages));
+  }, [messages]);
+
+  const clearChat = () => {
+    setMessages([]);
+    sessionStorage.removeItem('ai_chat_history');
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -159,14 +178,26 @@ export function AIAssistant() {
   return (
     <div className="flex flex-col h-full bg-slate-50 relative overflow-hidden">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center gap-3 shrink-0">
-        <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-          <Sparkles size={24} />
+      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+            <Sparkles size={24} />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-slate-800">Assistente de IA</h2>
+            <p className="text-sm text-slate-500">Consulta inteligente aos dados de fomento, patrocínio e Infra-BR</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-xl font-bold text-slate-800">Assistente de IA</h2>
-          <p className="text-sm text-slate-500">Consulta inteligente aos dados de fomento, patrocínio e Infra-BR</p>
-        </div>
+        {messages.length > 0 && (
+          <button
+            onClick={clearChat}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100"
+            title="Limpar Histórico"
+          >
+            <Trash2 size={16} />
+            <span className="hidden sm:inline">Limpar Histórico</span>
+          </button>
+        )}
       </div>
 
       {/* Warning Alert */}

@@ -2,10 +2,12 @@ import React, { useMemo, useState } from 'react';
 import { Building2, CircleDollarSign } from 'lucide-react';
 import { appData } from '../data/parser';
 import { infraData } from '../data/infraBR_parser';
+import { getStateSigla } from '../data/regions';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, Tooltip, PieChart, Pie, AreaChart, Area, Legend } from 'recharts';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 import { scaleLinear } from 'd3-scale';
 import { geoMercator, geoCentroid } from 'd3-geo';
+import * as RadixTooltip from '@radix-ui/react-tooltip';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -38,11 +40,31 @@ interface OverviewProps {
   showEntityCount?: boolean;
 }
 
+const DIMENSION_COLORS: Record<string, string> = {
+  'Mobilidade': '#9937A8',
+  'Energia e Conectividade': '#C5741D',
+  'Bem-Estar Social': '#A73756',
+  'Cidadania': '#A73756',
+  'Água': '#1F7F70',
+  'Saneamento Básico': '#090076',
+  'Meio Ambiente': '#4B7A0F',
+  'Resiliência': '#4B7A0F'
+};
+
+const getDimensionColor = (name: string, fallback: string) => {
+  for (const [key, color] of Object.entries(DIMENSION_COLORS)) {
+    if (name.toLowerCase().includes(key.toLowerCase())) return color;
+  }
+  return fallback;
+};
+
 export function Overview({ data = appData.fomento2026, theme = 'overview', showEntityCount = false }: OverviewProps) {
   const formatBRL = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
   const selecionados = data;
   const [selectedState, setSelectedState] = useState<string | null>(null);
   const [selectedCategoria, setSelectedCategoria] = useState<string | null>(null);
+  const [selectedInfraDimension, setSelectedInfraDimension] = useState<string | null>(null);
+  const [selectedInfraComponent, setSelectedInfraComponent] = useState<string | null>(null);
   const [mapTooltip, setMapTooltip] = useState<{content: string, rankRepasse?: string, rankInfraBR?: string, sub: string, sub2?: string, sub3?: string, fom?: string, pat?: string, stateProp?: string, regionProp?: string, x: number, y: number} | null>(null);
   const [geoData, setGeoData] = useState<any>(null);
 
@@ -174,18 +196,48 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
     return stateColorScale(value);
   };
 
-  const categoriaData = useMemo(() => {
-    const dataToUse = selectedState
-      ? selecionados.filter(item => item.ESTADO === selectedState)
-      : selecionados;
-
-    const map = new Map<string, number>();
-    dataToUse.forEach(item => {
-      const obj = item.CATEGORIA || 'Indefinido';
-      map.set(obj, (map.get(obj) || 0) + 1);
-    });
-    return Array.from(map.entries()).map(([name, count]) => ({ name, Entidades: count })).sort((a,b) => b.Entidades - a.Entidades);
-  }, [selecionados, selectedState]);
+  const infraChartData = useMemo(() => {
+    if (!selectedState) {
+      return infraData.mediasBR
+        .filter(d => d.dimensao !== 'INFRA-BR')
+        .map(d => ({
+          name: d.dimensao,
+          value: d.media_pais_pct,
+          label: 'Média BR'
+        }))
+        .sort((a, b) => b.value - a.value);
+    } else {
+      const sigla = getStateSigla(selectedState);
+      if (selectedInfraComponent) {
+        return infraData.indicadores
+          .filter(i => i.sigla_uf === sigla && i.component_name === selectedInfraComponent)
+          .map(i => ({
+            name: i.indicator_name,
+            value: i.value,
+            label: selectedState
+          }))
+          .sort((a, b) => b.value - a.value);
+      }
+      if (selectedInfraDimension) {
+        return infraData.componentes
+          .filter(c => c.sigla_uf === sigla && c.dimension_name === selectedInfraDimension)
+          .map(c => ({
+            name: c.component_name,
+            value: c.value,
+            label: selectedState
+          }))
+          .sort((a, b) => b.value - a.value);
+      }
+      return infraData.dimensoes
+        .filter(d => d.sigla_uf === sigla)
+        .map(d => ({
+          name: d.dimension_name,
+          value: d.value,
+          label: selectedState
+        }))
+        .sort((a, b) => b.value - a.value);
+    }
+  }, [selectedState, selectedInfraDimension, selectedInfraComponent]);
 
   const grupoData = useMemo(() => {
     const dataToUse = selectedState
@@ -225,6 +277,8 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
   const clearFilters = () => {
     setSelectedState(null);
     setSelectedCategoria(null);
+    setSelectedInfraDimension(null);
+    setSelectedInfraComponent(null);
   };
 
   const mapProjection = useMemo(() => {
@@ -244,6 +298,26 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
     
     return projection.fitSize([width, height], geoData);
   }, [geoData, selectedState]);
+
+  const getComponentsForDimension = (dimensionName: string) => {
+    if (!selectedState) return [];
+    const sigla = getStateSigla(selectedState);
+    return infraData.componentes
+      .filter(c => c.sigla_uf === sigla && c.dimension_name === dimensionName)
+      .map(c => ({ name: c.component_name, value: c.value }));
+  };
+
+  const getIndicatorsForComponent = (componentName: string) => {
+    if (!selectedState) return [];
+    const sigla = getStateSigla(selectedState);
+    return infraData.indicadores
+      .filter(i => i.sigla_uf === sigla && i.component_name === componentName)
+      .map(i => ({ name: i.indicator_name, value: i.value }));
+  };
+
+  const getIndicatorDetails = (indicatorName: string) => {
+    return infraData.detalhamento.find(d => d.INDICADOR.trim().toLowerCase() === indicatorName.trim().toLowerCase() || d.ID === indicatorName);
+  };
 
   return (
     <div className="space-y-6">
@@ -401,7 +475,12 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                             pressed: { outline: "none", fill: tColorSecondaryDark }
                           }}
                           onClick={() => {
-                            setSelectedState(selectedState === stateName ? null : stateName);
+                            const isSame = selectedState === stateName;
+                            setSelectedState(isSame ? null : stateName);
+                            if (!isSame) {
+                              setSelectedInfraDimension(null);
+                              setSelectedInfraComponent(null);
+                            }
                           }}
                           onMouseEnter={(e) => {
                             setMapTooltip({
@@ -620,55 +699,122 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
           ) : (
             <>
               <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2 cursor-default flex justify-between items-center shrink-0">
-                <span className="truncate" title="Projetos por Categoria">Projetos por Categoria</span>
-                {selectedCategoria && <span className="text-[10px] font-normal text-slate-400 truncate max-w-[80px]" title={selectedCategoria}>Filtro</span>}
+                <span className="truncate" title="Desempenho Infra-BR">Desempenho Infra-BR</span>
+                <span className="text-[10px] font-normal text-slate-400 truncate max-w-[120px]" title={selectedState ? selectedState : 'Média Nacional'}>
+                  {selectedState ? `Estado: ${selectedState}` : 'Média Nacional'}
+                </span>
               </h3>
-              <div className="flex-1 w-full min-h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={categoriaData} margin={{ top: 20, right: 5, left: -20, bottom: 90 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis 
-                      dataKey="name" 
-                      angle={-45} 
-                      textAnchor="end" 
-                      height={90} 
-                      interval={0}
-                      tick={{ fontSize: 10, fill: "#64748b" }} 
-                    />
-                    <YAxis type="number" tick={{ fontSize: 10, fill: "#64748b" }} />
-                    <Tooltip 
-                      cursor={{fill: '#f1f5f9'}} 
-                      contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '0.375rem', color: '#f8fafc', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}
-                      itemStyle={{ color: '#f8fafc', fontWeight: 500 }}
-                      labelStyle={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '8px', borderBottom: '1px solid #334155', paddingBottom: '4px' }}
-                    />
-                    <Bar 
-                      dataKey="Entidades" 
-                      fill={tColorSecondary} 
-                      radius={[4, 4, 0, 0]}
-                      onClick={(data: any) => {
-                        const key = data?.payload?.name || data?.name;
-                        if (key) {
-                          setSelectedCategoria(selectedCategoria === key ? null : key);
-                        }
-                      }}
-                      cursor="pointer"
-                    >
-                      {categoriaData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={tColorSecondary}
-                          opacity={selectedCategoria && selectedCategoria !== entry.name ? 0.3 : 1}
-                          style={{ outline: "none" }}
-                          className="transition-opacity duration-200"
-                        />
-                      ))}
-                      <LabelList dataKey="Entidades" position="top" fill={tColorSecondary} fontSize={11} fontWeight={600} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+              {selectedInfraComponent ? (
+                <button
+                  onClick={() => setSelectedInfraComponent(null)}
+                  className="mb-4 text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1 transition-colors bg-white px-3 py-1.5 rounded-lg border border-slate-200 self-start"
+                >
+                  &larr; Voltar para Componentes
+                </button>
+              ) : selectedInfraDimension ? (
+                <button
+                  onClick={() => setSelectedInfraDimension(null)}
+                  className="mb-4 text-xs font-medium text-slate-500 hover:text-slate-800 flex items-center gap-1 transition-colors bg-white px-3 py-1.5 rounded-lg border border-slate-200 self-start"
+                >
+                  &larr; Voltar para Dimensões
+                </button>
+              ) : null}
+              <div className="flex-1 w-full flex flex-col gap-3 overflow-y-auto pr-2 pb-2">
+                {infraChartData.map((d, index) => {
+                  const isDimension = !selectedInfraDimension;
+                  const isComponent = !!selectedInfraDimension && !selectedInfraComponent;
+                  const isIndicator = !!selectedInfraComponent;
+                  
+                  const tooltipItems = isDimension ? getComponentsForDimension(d.name)
+                    : isComponent ? getIndicatorsForComponent(d.name)
+                    : [];
+                    
+                  // get dimension color to pass down
+                  // if we are indicating a component/indicator, we still want the original dimension color if possible
+                  const currentColor = getDimensionColor(isIndicator ? selectedInfraDimension || d.name : isComponent ? selectedInfraDimension || d.name : d.name, tColorPrimary);
+                  const indicatorDetails = isIndicator ? getIndicatorDetails(d.name) : null;
+                    
+                  return (
+                    <RadixTooltip.Provider delayDuration={150} key={index}>
+                      <RadixTooltip.Root>
+                        <RadixTooltip.Trigger asChild>
+                          <div 
+                            className={`relative bg-white shadow-sm border-l-[6px] p-4 flex flex-col items-start transition-shadow hover:shadow-md shrink-0 ${(isDimension || isComponent) && selectedState ? 'cursor-pointer hover:bg-slate-50' : ''}`} 
+                            style={{ borderLeftColor: currentColor }}
+                            onClick={() => {
+                              if (!selectedState) return;
+                              if (isDimension) {
+                                setSelectedInfraDimension(d.name);
+                              } else if (isComponent) {
+                                setSelectedInfraComponent(d.name);
+                              }
+                            }}
+                          >
+                            <h4 className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2 w-full text-left leading-tight break-words whitespace-normal">{d.name}</h4>
+                            <div className="flex w-full justify-center mt-1">
+                              <span className="text-3xl font-black tracking-tight text-slate-700">{d.value.toFixed(1)}</span>
+                            </div>
+                          </div>
+                        </RadixTooltip.Trigger>
+                        
+                        {(tooltipItems.length > 0 || indicatorDetails) && (
+                          <RadixTooltip.Portal>
+                            <RadixTooltip.Content 
+                              side="left" 
+                              sideOffset={14}
+                              align="center"
+                              className="z-50 bg-slate-800 text-white text-xs rounded-lg p-3 shadow-xl max-w-xs animate-in fade-in zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95"
+                            >
+                              {indicatorDetails ? (
+                                <>
+                                  <div className="font-semibold mb-2 pb-1 border-b border-slate-600 text-slate-200">
+                                    Sobre o Indicador
+                                  </div>
+                                  <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                                    {indicatorDetails.DESCRICAO && (
+                                      <div>
+                                        <div className="text-slate-400 mb-0.5">Descrição/Cálculo:</div>
+                                        <div className="text-slate-200 leading-snug">{indicatorDetails.DESCRICAO}</div>
+                                      </div>
+                                    )}
+                                    {indicatorDetails.UNIDADE && (
+                                      <div>
+                                        <div className="text-slate-400 mb-0.5">Unidade:</div>
+                                        <div className="text-slate-200 leading-snug">{indicatorDetails.UNIDADE}</div>
+                                      </div>
+                                    )}
+                                    {indicatorDetails.INTERPRETACAO && (
+                                      <div>
+                                        <div className="text-slate-400 mb-0.5">Interpretação:</div>
+                                        <div className="text-slate-200 leading-snug">{indicatorDetails.INTERPRETACAO}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </>
+                              ) : (
+                                <>
+                                  <div className="font-semibold mb-2 pb-1 border-b border-slate-600 text-slate-200">
+                                    {isComponent ? 'Indicadores' : 'Componentes'}
+                                  </div>
+                                  <ul className="list-disc pl-4 space-y-1 max-h-[300px] overflow-y-auto w-full pr-2">
+                                    {tooltipItems.map((item, idx) => (
+                                      <li key={idx} className="text-slate-300 leading-snug">
+                                        {item.name}: <span className="font-semibold text-white">{item.value.toFixed(1)}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              )}
+                              <RadixTooltip.Arrow className="fill-slate-800" />
+                            </RadixTooltip.Content>
+                          </RadixTooltip.Portal>
+                        )}
+                      </RadixTooltip.Root>
+                    </RadixTooltip.Provider>
+                  );
+                })}
               </div>
-              <p className="text-[10px] text-slate-400 mt-4 text-center shrink-0">Clique na coluna para filtrar.</p>
+              <p className="text-[10px] text-slate-400 mt-4 text-center shrink-0">Dados dimensionais provenientes do Infra-BR.</p>
             </>
           )}
         </div>
