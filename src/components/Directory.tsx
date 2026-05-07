@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { appData } from '../data/parser';
-import { Search, Filter, Check, X, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Search, Filter, Check, X, ArrowUpDown, ArrowUp, ArrowDown, ChevronDown, ChevronUp } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -23,6 +23,17 @@ export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
   const [filterCategoria, setFilterCategoria] = useState<string>('all');
   const [filterFiscal, setFilterFiscal] = useState<string>('all');
   const [filterRepasse, setFilterRepasse] = useState<string>('all');
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+
+  const toggleRow = (cnpj: string) => {
+    const next = new Set(expandedRows);
+    if (next.has(cnpj)) {
+      next.delete(cnpj);
+    } else {
+      next.add(cnpj);
+    }
+    setExpandedRows(next);
+  };
 
   type SortKey = 'ENTIDADE' | 'CNPJ' | 'ESTADO' | 'IsCDEN' | 'VALOR_REPASSE' | 'NOTA' | 'tipoRepasse';
   const [sortConfig, setSortConfig] = useState<{ key: SortKey | null, direction: 'asc' | 'desc' }>({ 
@@ -269,26 +280,39 @@ export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
           <tbody className="divide-y divide-slate-200">
             {filteredData.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-slate-500">Nenhuma entidade encontrada.</td>
+                <td colSpan={7} className="py-8 text-center text-slate-500">Nenhuma entidade encontrada.</td>
               </tr>
             ) : (
-              filteredData.map((item, idx) => (
-                <tr key={item.CNPJ + idx} className="hover:bg-slate-50 transition-colors">
-                  <td className="py-3 px-6">
-                    <div className="font-medium text-slate-800 text-sm">{item.ENTIDADE}</div>
-                    <div className="mt-2 flex flex-wrap items-start gap-1">
+              filteredData.map((item, idx) => {
+                const uniqueKey = item.CNPJ + idx;
+                const isExpanded = expandedRows.has(uniqueKey);
+                const hasAnexoInfo = Boolean(item.OBJETIVO_COMPLETO || item.AREA_ABRANGENCIA || item.OBJETIVO_ESPECIFICO_COMPLETO || item.PUBLICO_ALVO);
+
+                return (
+                 <React.Fragment key={uniqueKey}>
+                  <tr className={cn("hover:bg-slate-50 transition-colors cursor-pointer", isExpanded && "bg-slate-50")} onClick={() => toggleRow(uniqueKey)}>
+                    <td className="py-3 px-6">
+                      <div className="flex items-start">
+                        <button className="mr-3 mt-0.5 text-slate-400 hover:text-[#003865] flex-shrink-0 transition-colors">
+                          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+                        </button>
+                        <div>
+                          <div className="font-medium text-slate-800 text-sm align-middle flex items-center">
+                            {item.ENTIDADE}
+                          </div>
+                          <div className="mt-2 flex flex-wrap items-start gap-1">
                       <span className={cn(
                         "inline-block px-2 py-0.5 rounded text-xs font-medium border whitespace-nowrap",
-                        item.CATEGORIA === "Direcionamento Estratégico Local" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                        item.CATEGORIA === "Identificação e Proposição de Soluções" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
-                        item.CATEGORIA === "Mapeamento de Recursos" ? "bg-amber-50 text-amber-700 border-amber-200" :
-                        item.CATEGORIA === "Evento" ? "bg-purple-50 text-purple-700 border-purple-200" :
-                        item.CATEGORIA === "Revista" ? "bg-pink-50 text-pink-700 border-pink-200" :
-                        item.CATEGORIA === "Livro" ? "bg-cyan-50 text-cyan-700 border-cyan-200" :
-                        item.CATEGORIA === "Atividade principal do Sistema Confea/Crea" ? "bg-indigo-50 text-indigo-700 border-indigo-200" :
-                        item.CATEGORIA === "Transparência, Legalidade e Legitimidade do Sistema Confea/Crea" ? "bg-teal-50 text-teal-700 border-teal-200" :
-                        item.CATEGORIA === "Papel do Sistema Confea/Crea" ? "bg-rose-50 text-rose-700 border-rose-200" :
-                        item.CATEGORIA === "erro" ? "bg-red-50 text-red-700 border-red-200" :
+                        item.CATEGORIA?.toLowerCase() === "direcionamento estratégico local" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                        item.CATEGORIA?.toLowerCase() === "identificação e proposição de soluções" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                        item.CATEGORIA?.toLowerCase() === "mapeamento de recursos" ? "bg-amber-50 text-amber-700 border-amber-200" :
+                        item.CATEGORIA?.toLowerCase() === "evento" ? "bg-purple-50 text-purple-700 border-purple-200" :
+                        item.CATEGORIA?.toLowerCase() === "revista" ? "bg-pink-50 text-pink-700 border-pink-200" :
+                        item.CATEGORIA?.toLowerCase() === "livro" ? "bg-cyan-50 text-cyan-700 border-cyan-200" :
+                        item.CATEGORIA?.toLowerCase() === "atividade principal do sistema confea/crea" ? "bg-indigo-50 text-indigo-700 border-indigo-200" :
+                        item.CATEGORIA?.toLowerCase() === "transparência, legalidade e legitimidade do sistema confea/crea" ? "bg-teal-50 text-teal-700 border-teal-200" :
+                        item.CATEGORIA?.toLowerCase() === "papel do sistema confea/crea" ? "bg-rose-50 text-rose-700 border-rose-200" :
+                        item.CATEGORIA?.toLowerCase() === "erro" ? "bg-red-50 text-red-700 border-red-200" :
                         "bg-slate-100 text-slate-600 border-slate-200"
                       )} title={item.CATEGORIA || "Não definido"}>
                         {item.OBJETIVO || "Não definido"}
@@ -322,14 +346,16 @@ export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
                         {item.tipoRepasse}
                       </span>
                     </div>
+                   </div>
+                  </div>
                   </td>
-                  <td className="py-3 px-6 text-[10px] text-slate-600 font-mono whitespace-nowrap">{item.CNPJ}</td>
-                  <td className="py-3 px-6">
+                  <td className="py-3 px-6 text-[10px] text-slate-600 font-mono whitespace-nowrap align-top">{item.CNPJ}</td>
+                  <td className="py-3 px-6 align-top">
                     <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-800">
                       {item.ESTADO}
                     </span>
                   </td>
-                  <td className="py-3 px-6 text-center">
+                  <td className="py-3 px-6 text-center align-top">
                     {item.IsCDEN && item.IsPrecursora ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] leading-tight font-bold bg-indigo-100 text-indigo-800 border border-indigo-200" title="CDEN e Precursora">CDEN/PREC</span>
                     ) : item.IsCDEN ? (
@@ -352,7 +378,48 @@ export function Directory({ data = appData.fomento2026 }: DirectoryProps) {
                     </div>
                   </td>
                 </tr>
-              ))
+                {isExpanded && (
+                  <tr className="bg-slate-50 border-b border-slate-200">
+                    <td colSpan={6} className="py-4 px-10">
+                      <div className="space-y-4 text-sm max-w-4xl">
+                        {item.OBJETIVO_COMPLETO ? (
+                          <div>
+                            <h4 className="font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wide">Objetivo Completo</h4>
+                            <p className="text-slate-600 leading-relaxed">{item.OBJETIVO_COMPLETO}</p>
+                          </div>
+                        ) : null}
+                        {item.OBJETIVO_ESPECIFICO_COMPLETO ? (
+                          <div>
+                            <h4 className="font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wide">Objetivo Específico</h4>
+                            <p className="text-slate-600 leading-relaxed">{item.OBJETIVO_ESPECIFICO_COMPLETO}</p>
+                          </div>
+                        ) : null}
+                        <div className="grid grid-cols-2 gap-6">
+                          {item.PUBLICO_ALVO ? (
+                            <div>
+                              <h4 className="font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wide">Público Alvo</h4>
+                              <p className="text-slate-600">{item.PUBLICO_ALVO}</p>
+                            </div>
+                          ) : null}
+                          {item.AREA_ABRANGENCIA ? (
+                            <div>
+                              <h4 className="font-semibold text-slate-700 mb-1 text-xs uppercase tracking-wide">Área de Abrangência</h4>
+                              <p className="text-slate-600">{item.AREA_ABRANGENCIA}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                        {!hasAnexoInfo && (
+                          <div className="p-4 bg-white border border-slate-200 rounded-md text-slate-500 italic">
+                            Detalhes do anexo não disponíveis para esta entidade.
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
+                </React.Fragment>
+              );
+            })
             )}
           </tbody>
         </table>

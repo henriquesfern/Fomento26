@@ -22,14 +22,14 @@ const parseNumberBR = (val: string) => {
 };
 
 export const parseInfraBRData = () => {
-  const parseConfig = { header: true, skipEmptyLines: true, delimiter: ';' };
+  const parseConfig = { header: true, skipEmptyLines: true, delimiter: ',' };
 
   const infra_br_raw = Papa.parse<any>(infraBRCsv.trim(), parseConfig).data;
   const medias_BR_raw = Papa.parse<any>(mediasBRCsv.trim(), parseConfig).data;
   const dimensoes_raw = Papa.parse<any>(dimensoesCsv.trim(), parseConfig).data;
   const componentes_raw = Papa.parse<any>(componentesCsv.trim(), parseConfig).data;
   const indicadores_raw = Papa.parse<any>(indicadoresCsv.trim(), parseConfig).data;
-  const detalhamento_raw = Papa.parse<any>(detalhamentoCsv.trim(), { header: true, skipEmptyLines: true, delimiter: ';' }).data;
+  const detalhamento_raw = Papa.parse<any>(detalhamentoCsv.trim(), { header: true, skipEmptyLines: true, delimiter: ',' }).data;
 
   const infraEstados: InfraState[] = infra_br_raw
     .filter((row: any) => row.sigla_uf)

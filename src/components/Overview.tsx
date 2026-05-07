@@ -3,6 +3,7 @@ import { Building2, CircleDollarSign } from 'lucide-react';
 import { appData } from '../data/parser';
 import { infraData } from '../data/infraBR_parser';
 import { getStateSigla } from '../data/regions';
+import { getCityCoords } from '../data/municipalities';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, Cell, Tooltip, PieChart, Pie, AreaChart, Area, Legend } from 'recharts';
 import { ComposableMap, Geographies, Geography, Marker } from 'react-simple-maps';
 import { scaleLinear } from 'd3-scale';
@@ -65,7 +66,7 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
   const [selectedCategoria, setSelectedCategoria] = useState<string | null>(null);
   const [selectedInfraDimension, setSelectedInfraDimension] = useState<string | null>(null);
   const [selectedInfraComponent, setSelectedInfraComponent] = useState<string | null>(null);
-  const [mapTooltip, setMapTooltip] = useState<{content: string, rankRepasse?: string, rankInfraBR?: string, sub: string, sub2?: string, sub3?: string, fom?: string, pat?: string, stateProp?: string, regionProp?: string, x: number, y: number} | null>(null);
+  const [mapTooltip, setMapTooltip] = useState<{content: string, rankRepasse?: string, rankInfraBR?: string, sub: string, sub2?: string, sub3?: string, fom?: string, pat?: string, stateProp?: string, regionProp?: string, isCityMarker?: boolean, x: number, y: number} | null>(null);
   const [geoData, setGeoData] = useState<any>(null);
 
   React.useEffect(() => {
@@ -281,6 +282,32 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
     setSelectedInfraComponent(null);
   };
 
+  const cityMarkers = useMemo(() => {
+    if (!selectedState) return [];
+    
+    // Filtramos apenas projetos de fomento no estado selecionado
+    const currentEntities = selecionados.filter((e: any) => e.ESTADO === selectedState && (!e.tipoRepasse || e.tipoRepasse === 'Fomento'));
+    const markers: { name: string, label: string, coords: [number, number], entities: any[] }[] = [];
+    
+    currentEntities.forEach(entity => {
+      const city = getCityCoords(entity.ENTIDADE);
+      if (city) {
+        const existing = markers.find(m => m.name === city.name);
+        if (existing) {
+          existing.entities.push(entity);
+        } else {
+          markers.push({
+            name: city.name,
+            label: city.label,
+            coords: [city.lng, city.lat],
+            entities: [entity]
+          });
+        }
+      }
+    });
+    return markers;
+  }, [selecionados, selectedState]);
+
   const mapProjection = useMemo(() => {
     const width = 800;
     const height = 500;
@@ -290,9 +317,11 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
     }
     
     if (selectedState) {
-      const feature = geoData.features.find((f: any) => f.properties.sigla === selectedState);
+      const feature = geoData.features.find((f: any) => f.properties.name === selectedState);
       if (feature) {
-        return projection.fitSize([width, height], feature);
+        // Add padding to the fit so the state doesn't touch the edges
+        const padding = 20;
+        return projection.fitExtent([[padding, padding], [width - padding, height - padding]], feature);
       }
     }
     
@@ -320,21 +349,9 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-end">
-        <div></div>
-        {(selectedState || selectedCategoria) && (
-          <button 
-            onClick={clearFilters}
-            className="text-sm text-slate-500 hover:text-slate-800 underline transition-colors"
-          >
-            Limpar Filtros ({[selectedState, selectedCategoria].filter(Boolean).join(', ')})
-          </button>
-        )}
-      </div>
-
+    <div className="space-y-6 mt-4">
       {/* KPIs Section */}
-      <div className="flex flex-col gap-6 -mt-4">
+      <div className="flex flex-col gap-6">
         {/* Main KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="p-8 bg-white shadow-sm flex items-center justify-start gap-6 border-l-8" style={{ borderLeftColor: tColorPrimaryHex }}>
@@ -396,12 +413,27 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="flex flex-col gap-2 -mt-4">
+        {/* Filter Clear Button Container (Fixed min-height to prevent layout shift) */}
+        <div className="flex justify-end items-center min-h-[24px]">
+          {(selectedState || selectedCategoria) && (
+            <button 
+              onClick={clearFilters}
+              className="text-sm font-medium text-slate-500 hover:text-slate-800 underline transition-colors decoration-slate-300 hover:decoration-slate-500 underline-offset-4"
+            >
+              Limpar Filtros ({[selectedState, selectedCategoria].filter(Boolean).join(', ')})
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="col-span-1 lg:col-span-3 p-6 bg-white border border-slate-200 shadow-sm relative flex flex-col">
-          <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2 cursor-default flex justify-between items-center shrink-0">
-            <span>Investimento por Estado</span>
-            {selectedState && <span className="text-xs font-normal text-slate-400">Filtrado: {selectedState}</span>}
-          </h3>
+          <div className="mb-6 border-b pb-2 shrink-0">
+            <h3 className="text-lg font-semibold text-slate-800 flex items-center cursor-default">
+              <span>Investimento por Estado</span>
+            </h3>
+            {selectedState && <div className="text-xs font-normal text-slate-500 mt-0.5 cursor-default">Filtrado: {selectedState}</div>}
+          </div>
           <div className="flex-1 w-full relative min-h-[500px]">
             <ComposableMap
               projection={mapProjection as any}
@@ -528,6 +560,43 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                   })
                 }
               </Geographies>
+              {selectedState && cityMarkers.map((marker, index) => (
+                <Marker key={`city-${index}`} coordinates={marker.coords}>
+                  <circle r={6} fill="#1e40af" stroke="#ffffff" strokeWidth={2} style={{ cursor: 'pointer' }}
+                    onMouseEnter={(e) => {
+                      const fom = marker.entities.reduce((acc, e) => acc + (e.VALOR_REPASSE || 0), 0);
+                      setMapTooltip({
+                        isCityMarker: true,
+                        content: marker.label,
+                        sub: `Entidades: ${marker.entities.length}`,
+                        fom: new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(fom),
+                        x: e.clientX,
+                        y: e.clientY
+                      });
+                    }}
+                    onMouseMove={(e) => {
+                      setMapTooltip(prev => prev ? {...prev, x: e.clientX, y: e.clientY} : prev);
+                    }}
+                    onMouseLeave={() => {
+                      setMapTooltip(null);
+                    }}
+                  />
+                  <text
+                    textAnchor="middle"
+                    y={-12}
+                    style={{
+                      fontFamily: "system-ui",
+                      fill: "#1e3a8a",
+                      fontSize: "11px",
+                      fontWeight: "bold",
+                      pointerEvents: "none",
+                      textShadow: "0px 1px 3px rgba(255,255,255,0.9), 0px 0px 2px rgba(255,255,255,1)"
+                    }}
+                  >
+                    {marker.label}
+                  </text>
+                </Marker>
+              ))}
             </ComposableMap>
             
             {mapTooltip && (
@@ -538,7 +607,20 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
                 <div className="font-bold text-base mb-2 border-b border-slate-700 pb-1">
                   <span>{mapTooltip.content}</span>
                 </div>
-                {theme === 'history' && showEntityCount ? (
+                {mapTooltip.isCityMarker ? (
+                  <div className="flex flex-col gap-1 text-sm">
+                    <div className="flex justify-between gap-4 mt-1">
+                      <span className="text-slate-400 font-medium">Projetos Identificados:</span> 
+                      <span className="font-semibold text-white">{mapTooltip.sub.replace('Entidades: ', '')}</span>
+                    </div>
+                    {mapTooltip.fom && (
+                      <div className="flex justify-between gap-4 pt-1 mt-1 border-t border-slate-700/50">
+                        <span className="text-slate-400 font-medium">Repasse Local:</span> 
+                        <span className="font-medium text-emerald-400">{mapTooltip.fom}</span>
+                      </div>
+                    )}
+                  </div>
+                ) : theme === 'history' && showEntityCount ? (
                   <div className="flex flex-col gap-1 text-sm">
                     {mapTooltip.rankRepasse && (
                       <div className="flex justify-between gap-4">
@@ -698,12 +780,14 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
             </>
           ) : (
             <>
-              <h3 className="text-lg font-semibold text-slate-800 mb-6 border-b pb-2 cursor-default flex justify-between items-center shrink-0">
-                <span className="truncate" title="Desempenho Infra-BR">Desempenho Infra-BR</span>
-                <span className="text-[10px] font-normal text-slate-400 truncate max-w-[120px]" title={selectedState ? selectedState : 'Média Nacional'}>
+              <div className="mb-6 border-b pb-2 shrink-0">
+                <h3 className="text-lg font-semibold text-slate-800 flex items-center">
+                  <a href="https://www.infrabr.org.br/" target="_blank" rel="noopener noreferrer" className="truncate hover:text-[#1e40af] transition-colors" title="Acessar https://www.infrabr.org.br/">Desempenho Infra-BR</a>
+                </h3>
+                <div className="text-xs font-normal text-slate-500 mt-0.5 cursor-default" title={selectedState ? selectedState : 'Média Nacional'}>
                   {selectedState ? `Estado: ${selectedState}` : 'Média Nacional'}
-                </span>
-              </h3>
+                </div>
+              </div>
               {selectedInfraComponent ? (
                 <button
                   onClick={() => setSelectedInfraComponent(null)}
@@ -818,6 +902,7 @@ export function Overview({ data = appData.fomento2026, theme = 'overview', showE
             </>
           )}
         </div>
+      </div>
       </div>
     </div>
   );
